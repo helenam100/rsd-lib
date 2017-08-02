@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = rsd_lib
+
+[report]
+ignore_errors = True
