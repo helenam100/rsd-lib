@@ -88,11 +88,17 @@ class NodeTestCase(testtools.TestCase):
                           ],
                          value.allowed_values)
 
-    def test_get__reset_action_element_missing_reset_action(self):
+    def test__get_reset_action_element_missing_reset_action(self):
         self.node_inst._actions.reset = None
         self.assertRaisesRegex(
             exceptions.MissingActionError, 'action #ComposedNode.Reset',
             self.node_inst._get_reset_action_element)
+
+    def test__get_assemble_action_element(self):
+        value = self.node_inst._get_assemble_action_element()
+        self.assertEqual("/redfish/v1/Nodes/Node1/Actions/"
+                         "ComposedNode.Assemble",
+                         value.target_uri)
 
     def test_get_allowed_reset_node_values(self):
         values = self.node_inst.get_allowed_reset_node_values()
@@ -130,6 +136,11 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Node1/Actions/ComposedNode.Reset',
             data={'ResetType': 'ForceOff'})
+
+    def test_assemble_node(self):
+        self.node_inst.assemble_node()
+        self.node_inst._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Node1/Actions/ComposedNode.Assemble')
 
     def test_reset_node_invalid_value(self):
         self.assertRaises(exceptions.InvalidParameterValueError,
