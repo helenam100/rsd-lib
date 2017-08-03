@@ -22,6 +22,7 @@ import testtools
 
 from rsd_lib.resources.node import constants as node_cons
 from rsd_lib.resources.node import node
+from rsd_lib.tests.unit.fakes import request_fakes
 
 
 class NodeTestCase(testtools.TestCase):
@@ -311,6 +312,10 @@ class NodeTestCase(testtools.TestCase):
                       self.node_inst.processors.summary)
         self.conn.get.return_value.json.assert_not_called()
 
+    def test_delete_node(self):
+        self.node_inst.delete_node()
+        self.node_inst._conn.delete.assert_called_once()
+
 
 class NodeCollectionTestCase(testtools.TestCase):
 
@@ -319,7 +324,10 @@ class NodeCollectionTestCase(testtools.TestCase):
         self.conn = mock.Mock()
         with open('rsd_lib/tests/unit/json_samples/node_collection.json',
                   'r') as f:
-            self.conn.get.return_value.json.return_value = json.loads(f.read())
+            self.conn.get.return_value = request_fakes.fake_request_get(
+                json.loads(f.read()))
+            self.conn.post.return_value = request_fakes.fake_request_post(
+                None, headers={"Location": "Test"})
         self.node_col = node.NodeCollection(
             self.conn, '/redfish/v1/Nodes', redfish_version='1.0.2')
 
@@ -345,3 +353,28 @@ class NodeCollectionTestCase(testtools.TestCase):
             redfish_version=self.node_col.redfish_version)
         self.assertIsInstance(members, list)
         self.assertEqual(1, len(members))
+
+    def test__get_compose_action_element(self):
+        value = self.node_col._get_compose_action_element()
+        self.assertEqual('/redfish/v1/Nodes/Actions/Allocate',
+                         value.target_uri)
+
+    def test_compose_node_no_properties(self):
+        self.node_col.compose_node()
+        self.node_col._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Actions/Allocate', data={})
+
+    def test_compose_node_properties(self):
+        props = {
+            'Name': 'test',
+            'Description': 'this is a test node',
+            'Processors': [{
+                'TotalCores': 2
+            }],
+            'Memory': [{
+                'CapacityMiB': 16000
+            }]
+        }
+        self.node_col.compose_node(properties=props)
+        self.node_col._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Actions/Allocate', data=props)
