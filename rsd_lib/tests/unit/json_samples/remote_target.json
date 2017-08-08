@@ -1,0 +1,46 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#RemoteTargets/Links/Members/$entity",
+    "@odata.id": "/redfish/v1/Services/1/Targets/1",
+    "@odata.type": "#RemoteTarget.v1_1_0.RemoteTarget",
+    "Id": "1",
+    "Name": "Remote Target",
+    "Description": "Remote Target",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Type": "Network Storage",
+    "Addresses": [
+        {
+            "iSCSI":
+            {
+                "TargetLUN": [
+                    {
+                        "LUN" : 1,
+                        "LogicalDrive": "/redfish/v1/Services/1/LogicalDrives/1"
+                    }
+                ],
+                "TargetIQN": "iqn.2015-01.com.example:ceph-ubuntu14",
+                "TargetPortalIP": "10.102.44.54",
+                "TargetPortalPort": 3260,
+                "CHAP": {
+                    "Type": "Mutual",
+                    "Username": "valid_user",
+                    "Secret": null,
+                    "MutualUsername": "user2",
+                    "MutualSecret": null
+                }
+            }
+        }
+    ],
+    "Initiator": [
+        {
+            "iSCSI":
+            {
+                "InitiatorIQN": "iqn.2015-01.com.example:fedora21"
+            }
+        }
+    ],
+    "Oem": {},
+    "Links": {}
+}

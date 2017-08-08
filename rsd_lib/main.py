@@ -17,12 +17,17 @@ import sushy
 from sushy.resources import base
 
 from rsd_lib.resources.node import node
+from rsd_lib.resources.storage_service import storage_service
 
 
 class RSDLib(sushy.Sushy):
 
     _nodes_path = base.Field(['Nodes', '@odata.id'], required=True)
     """NodeCollection path"""
+
+    _storage_service_path = base.Field(['Services',
+                                        '@odata.id'], required=True)
+    """StorageServiceCollection path"""
 
     def get_node_collection(self):
         """Get the NodeCollection object
@@ -42,3 +47,24 @@ class RSDLib(sushy.Sushy):
         """
         return node.Node(self._conn, identity,
                          redfish_version=self.redfish_version)
+
+    def get_storage_service_collection(self):
+        """Get the StorageServiceCollection object
+
+        :raises: MissingAttributeError, if the collection attribute is
+            not found
+        :returns: a StorageServiceCollection object
+        """
+        return storage_service.StorageServiceCollection(
+            self._conn, self._storage_service_path,
+            redfish_version=self.redfish_version)
+
+    def get_storage_service(self, identity):
+        """Given the identity return a StorageService object
+
+        :param identity: The identity of the StorageService resource
+        :returns: The StorageService object
+        """
+        return storage_service.StorageService(
+            self._conn, identity,
+            redfish_version=self.redfish_version)

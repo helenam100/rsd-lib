@@ -1,0 +1,12 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Drives",
+    "@odata.id": "/redfish/v1/Services/1/Drives",
+    "@odata.type": "#PhysicalDriveCollection.PhysicalDriveCollection",
+    "Name": "Physical Drives Collection",
+    "Members@odata.count": 1,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Services/1/Drives/1"
+        }
+    ]
+}
