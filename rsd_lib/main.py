@@ -16,6 +16,7 @@
 import sushy
 from sushy.resources import base
 
+from rsd_lib.resources import chassis
 from rsd_lib.resources.node import node
 from rsd_lib.resources.storage_service import storage_service
 
@@ -24,6 +25,9 @@ class RSDLib(sushy.Sushy):
 
     _nodes_path = base.Field(['Nodes', '@odata.id'], required=True)
     """NodeCollection path"""
+
+    _chassis_path = base.Field(['Chassis', '@odata.id'], required=True)
+    """ChassisCollection path"""
 
     _storage_service_path = base.Field(['Services',
                                         '@odata.id'], required=True)
@@ -68,3 +72,24 @@ class RSDLib(sushy.Sushy):
         return storage_service.StorageService(
             self._conn, identity,
             redfish_version=self.redfish_version)
+
+    def get_chassis_collection(self):
+        """Get the ChassisCollection object
+
+        :raises: MissingAttributeError, if the collection attribute is
+            not found
+        :returns: a ChassisCollection object
+        """
+        return chassis.ChassisCollection(self._conn,
+                                         self._chassis_path,
+                                         redfish_version=self.redfish_version)
+
+    def get_chassis(self, identity):
+        """Given the identity return a Chassis object
+
+        :param identity: The identity of the Chassis resource
+        :returns: The Chassis object
+        """
+        return chassis.Chassis(self._conn,
+                               identity,
+                               redfish_version=self.redfish_version)
