@@ -321,4 +321,5 @@ class NodeCollection(base.ResourceCollectionBase):
         target_uri = self._get_compose_action_element().target_uri
         resp = self._conn.post(target_uri, data=properties)
         LOG.info("Node created at %s", resp.headers['Location'])
-        return resp.headers['Location']
+        node_url = resp.headers['Location']
+        return node_url[node_url.find(self._path):]

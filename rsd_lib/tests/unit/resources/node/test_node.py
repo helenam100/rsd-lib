@@ -338,7 +338,8 @@ class NodeCollectionTestCase(testtools.TestCase):
             self.conn.get.return_value = request_fakes.fake_request_get(
                 json.loads(f.read()))
             self.conn.post.return_value = request_fakes.fake_request_post(
-                None, headers={"Location": "Test"})
+                None, headers={"Location": "https://localhost:8443/"
+                                           "redfish/v1/Nodes/1"})
         self.node_col = node.NodeCollection(
             self.conn, '/redfish/v1/Nodes', redfish_version='1.0.2')
 
@@ -371,9 +372,10 @@ class NodeCollectionTestCase(testtools.TestCase):
                          value.target_uri)
 
     def test_compose_node_no_properties(self):
-        self.node_col.compose_node()
+        result = self.node_col.compose_node()
         self.node_col._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Actions/Allocate', data={})
+        self.assertEqual(result, '/redfish/v1/Nodes/1')
 
     def test_compose_node_properties(self):
         props = {
@@ -386,6 +388,7 @@ class NodeCollectionTestCase(testtools.TestCase):
                 'CapacityMiB': 16000
             }]
         }
-        self.node_col.compose_node(properties=props)
+        result = self.node_col.compose_node(properties=props)
         self.node_col._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Actions/Allocate', data=props)
+        self.assertEqual(result, '/redfish/v1/Nodes/1')
