@@ -17,7 +17,6 @@ import json
 
 import mock
 from sushy import exceptions
-from sushy.resources.system import processor
 import testtools
 
 from rsd_lib.resources.node import constants as node_cons
@@ -50,8 +49,11 @@ class NodeTestCase(testtools.TestCase):
         self.assertEqual(node_cons.NODE_POWER_STATE_ON,
                          self.node_inst.power_state)
         self.assertEqual(32, self.node_inst.memory_summary.size_gib)
-        self.assertEqual("OK", self.node_inst.memory_summary.health)
-        self.assertIsNone(self.node_inst._processors)
+        self.assertEqual('OK', self.node_inst.memory_summary.health)
+        self.assertEqual(2, self.node_inst.processor_summary.count)
+        self.assertEqual('Multi-Core Intel(R) Xeon(R) processor 7xxx Series',
+                         self.node_inst.processor_summary.model)
+        self.assertEqual('OK', self.node_inst.processor_summary.health)
 
     def test__parse_attributes_missing_actions(self):
         self.node_inst.json.pop('Actions')
@@ -199,12 +201,6 @@ class NodeTestCase(testtools.TestCase):
                           node_cons.BOOT_SOURCE_TARGET_HDD,
                           enabled='invalid-enabled')
 
-    def test__get_processor_collection_path_missing_processors_attr(self):
-        self.node_inst._json.pop('Processors')
-        self.assertRaisesRegex(
-            exceptions.MissingAttributeError, 'attribute Processors',
-            self.node_inst._get_processor_collection_path)
-
     def test_memory_summary_missing_attr(self):
         # | GIVEN |
         self.node_inst._json['Memory']['Status'].pop('Health')
@@ -237,91 +233,37 @@ class NodeTestCase(testtools.TestCase):
         # | THEN |
         self.assertEqual(None, self.node_inst.memory_summary)
 
-    def test_processors(self):
-        # check for the underneath variable value
-        self.assertIsNone(self.node_inst._processors)
+    def test_processory_summary_missing_attr(self):
         # | GIVEN |
-        self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/processor_collection.json',
-                  'r') as f:
-            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.node_inst._json['Processors']['Status'].pop('Health')
         # | WHEN |
-        actual_processors = self.node_inst.processors
+        self.node_inst._parse_attributes()
         # | THEN |
-        self.assertIsInstance(actual_processors,
-                              processor.ProcessorCollection)
-        self.conn.get.return_value.json.assert_called_once_with()
-
-        # reset mock
-        self.conn.get.return_value.json.reset_mock()
-        # | WHEN & THEN |
-        # tests for same object on invoking subsequently
-        self.assertIs(actual_processors,
-                      self.node_inst.processors)
-        self.conn.get.return_value.json.assert_not_called()
-
-    def test_processors_on_refresh(self):
-        # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/processor_collection.json',
-                  'r') as f:
-            self.conn.get.return_value.json.return_value = json.loads(f.read())
-        # | WHEN & THEN |
-        self.assertIsInstance(self.node_inst.processors,
-                              processor.ProcessorCollection)
-
-        # On refreshing the system instance...
-        with open('rsd_lib/tests/unit/json_samples/node.json', 'r') as f:
-            self.conn.get.return_value.json.return_value = json.loads(f.read())
-        self.node_inst.refresh()
-
-        # | WHEN & THEN |
-        self.assertIsNone(self.node_inst._processors)
+        self.assertEqual(2, self.node_inst.processor_summary.count)
+        self.assertEqual(None, self.node_inst.processor_summary.health)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/processor_collection.json',
-                  'r') as f:
-            self.conn.get.return_value.json.return_value = json.loads(f.read())
-        # | WHEN & THEN |
-        self.assertIsInstance(self.node_inst.processors,
-                              processor.ProcessorCollection)
-
-    def _setUp_processor_summary(self):
-        self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/processor_collection.json',
-                  'r') as f:
-            self.conn.get.return_value.json.return_value = json.loads(f.read())
-
-        # fetch processors for the first time
-        self.node_inst.processors
-
-        successive_return_values = []
-        with open('rsd_lib/tests/unit/json_samples/processor.json', 'r') as f:
-            successive_return_values.append(json.loads(f.read()))
-        with open('rsd_lib/tests/unit/json_samples/processor2.json', 'r') as f:
-            successive_return_values.append(json.loads(f.read()))
-
-        self.conn.get.return_value.json.side_effect = successive_return_values
-
-    def test_processor_summary(self):
-        # | GIVEN |
-        self._setUp_processor_summary()
+        self.node_inst._json['Processors'].pop('Status')
         # | WHEN |
-        actual_processor_summary = self.node_inst.processors.summary
+        self.node_inst._parse_attributes()
         # | THEN |
-        self.assertEqual((16, node_cons.PROCESSOR_ARCH_x86),
-                         actual_processor_summary)
-        self.assertEqual(16, actual_processor_summary.count)
-        self.assertEqual(node_cons.PROCESSOR_ARCH_x86,
-                         actual_processor_summary.architecture)
+        self.assertEqual(2, self.node_inst.processor_summary.count)
+        self.assertEqual(None, self.node_inst.processor_summary.health)
 
-        # reset mock
-        self.conn.get.return_value.json.reset_mock()
+        # | GIVEN |
+        self.node_inst._json['Processors'].pop('Count')
+        # | WHEN |
+        self.node_inst._parse_attributes()
+        # | THEN |
+        self.assertEqual(None, self.node_inst.processor_summary.count)
+        self.assertEqual(None, self.node_inst.processor_summary.health)
 
-        # | WHEN & THEN |
-        # tests for same object on invoking subsequently
-        self.assertIs(actual_processor_summary,
-                      self.node_inst.processors.summary)
-        self.conn.get.return_value.json.assert_not_called()
+        # | GIVEN |
+        self.node_inst._json.pop('Processors')
+        # | WHEN |
+        self.node_inst._parse_attributes()
+        # | THEN |
+        self.assertEqual(None, self.node_inst.processor_summary)
 
     def test_delete_node(self):
         self.node_inst.delete_node()

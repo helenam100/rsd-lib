@@ -18,7 +18,6 @@ import logging
 from sushy import exceptions
 from sushy.resources import base
 from sushy.resources import common
-from sushy.resources.system import processor
 
 from rsd_lib.resources.node import constants as node_cons
 from rsd_lib.resources.node import mappings as node_maps
@@ -90,6 +89,17 @@ class MemorySummaryField(base.CompositeField):
     """
 
 
+class ProcessorSummaryField(base.CompositeField):
+    health = base.Field(['Status', 'Health'])
+    """The overall health state of the node processors."""
+
+    count = base.Field('Count', adapter=int)
+    """The number of CPUs in the node."""
+
+    model = base.Field('Model')
+    """Basic information about processor model."""
+
+
 class Node(base.ResourceBase):
 
     boot = BootField('Boot', required=True)
@@ -118,7 +128,8 @@ class Node(base.ResourceBase):
     memory_summary = MemorySummaryField('Memory')
     """The summary info of memory of the node in general detail"""
 
-    _processors = None  # ref to ProcessorCollection instance
+    processor_summary = ProcessorSummaryField('Processors')
+    """The summary info for the node processors in general detail"""
 
     _actions = NodeActionsField('Actions', required=True)
 
@@ -248,28 +259,6 @@ class Node(base.ResourceBase):
 
         self._conn.patch(self.path, data=data)
 
-    def _get_processor_collection_path(self):
-        """Helper function to find the ProcessorCollection path"""
-        processor_col = self.json.get('Processors')
-        if not processor_col:
-            raise exceptions.MissingAttributeError(attribute='Processors',
-                                                   resource=self._path)
-        return processor_col.get('@odata.id')
-
-    @property
-    def processors(self):
-        """Property to provide reference to `ProcessorCollection` instance
-
-        It is calculated once when the first time it is queried. On refresh,
-        this property gets reset.
-        """
-        if self._processors is None:
-            self._processors = processor.ProcessorCollection(
-                self._conn, self._get_processor_collection_path(),
-                redfish_version=self.redfish_version)
-
-        return self._processors
-
     def delete_node(self):
         """Delete (disassemble) the node.
 
@@ -282,7 +271,6 @@ class Node(base.ResourceBase):
 
     def refresh(self):
         super(Node, self).refresh()
-        self._processors = None
 
 
 class NodeCollection(base.ResourceCollectionBase):
