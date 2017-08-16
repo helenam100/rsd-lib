@@ -18,6 +18,7 @@ import logging
 from sushy import exceptions
 from sushy.resources import base
 from sushy.resources import common
+from sushy.resources.system import system
 
 from rsd_lib.resources.node import constants as node_cons
 from rsd_lib.resources.node import mappings as node_maps
@@ -130,6 +131,8 @@ class Node(base.ResourceBase):
 
     processor_summary = ProcessorSummaryField('Processors')
     """The summary info for the node processors in general detail"""
+
+    _system = None  # ref to System instance
 
     _actions = NodeActionsField('Actions', required=True)
 
@@ -259,6 +262,27 @@ class Node(base.ResourceBase):
 
         self._conn.patch(self.path, data=data)
 
+    def _get_system_path(self):
+        """Helper function to find the System path"""
+        system_col = self.json.get('Links').get('ComputerSystem')
+        if not system_col:
+            raise exceptions.MissingAttributeError(attribute='System',
+                                                   resource=self._path)
+        return system_col.get('@odata.id')
+
+    @property
+    def system(self):
+        """Property to provide reference to `System` instance
+
+        It is calculated once the first time it is queried. On refresh,
+        this property is reset.
+        """
+        if self._system is None:
+            self._system = system.System(self._conn, self._get_system_path(),
+                                         redfish_version=self.redfish_version)
+
+        return self._system
+
     def delete_node(self):
         """Delete (disassemble) the node.
 
@@ -271,6 +295,7 @@ class Node(base.ResourceBase):
 
     def refresh(self):
         super(Node, self).refresh()
+        self._system = None
 
 
 class NodeCollection(base.ResourceCollectionBase):

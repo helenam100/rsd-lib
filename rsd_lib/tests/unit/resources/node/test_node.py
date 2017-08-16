@@ -17,6 +17,7 @@ import json
 
 import mock
 from sushy import exceptions
+from sushy.resources.system import system
 import testtools
 
 from rsd_lib.resources.node import constants as node_cons
@@ -201,6 +202,12 @@ class NodeTestCase(testtools.TestCase):
                           node_cons.BOOT_SOURCE_TARGET_HDD,
                           enabled='invalid-enabled')
 
+    def test__get_system_path_missing_systems_attr(self):
+        self.node_inst._json.get('Links').pop('ComputerSystem')
+        self.assertRaisesRegex(
+            exceptions.MissingAttributeError, 'attribute System',
+            self.node_inst._get_system_path)
+
     def test_memory_summary_missing_attr(self):
         # | GIVEN |
         self.node_inst._json['Memory']['Status'].pop('Health')
@@ -233,37 +240,53 @@ class NodeTestCase(testtools.TestCase):
         # | THEN |
         self.assertEqual(None, self.node_inst.memory_summary)
 
-    def test_processory_summary_missing_attr(self):
+    def test_system(self):
+        # check for the underneath variable value
+        self.assertIsNone(self.node_inst._system)
         # | GIVEN |
-        self.node_inst._json['Processors']['Status'].pop('Health')
+        self.conn.get.return_value.json.reset_mock()
+        with open('rsd_lib/tests/unit/json_samples/system.json',
+                  'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
-        self.node_inst._parse_attributes()
+        actual_system = self.node_inst.system
         # | THEN |
-        self.assertEqual(2, self.node_inst.processor_summary.count)
-        self.assertEqual(None, self.node_inst.processor_summary.health)
+        self.assertIsInstance(actual_system,
+                              system.System)
+        self.conn.get.return_value.json.assert_called_once_with()
+
+        # reset mock
+        self.conn.get.return_value.json.reset_mock()
+        # | WHEN & THEN |
+        # tests for same object on invoking subsequently
+        self.assertIs(actual_system,
+                      self.node_inst.system)
+        self.conn.get.return_value.json.assert_not_called()
+
+    def test_system_on_refresh(self):
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/system.json',
+                  'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.node_inst.system,
+                              system.System)
+
+        # On refreshing the system instance...
+        with open('rsd_lib/tests/unit/json_samples/node.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.node_inst.refresh()
+
+        # | WHEN & THEN |
+        self.assertIsNone(self.node_inst._system)
 
         # | GIVEN |
-        self.node_inst._json['Processors'].pop('Status')
-        # | WHEN |
-        self.node_inst._parse_attributes()
-        # | THEN |
-        self.assertEqual(2, self.node_inst.processor_summary.count)
-        self.assertEqual(None, self.node_inst.processor_summary.health)
-
-        # | GIVEN |
-        self.node_inst._json['Processors'].pop('Count')
-        # | WHEN |
-        self.node_inst._parse_attributes()
-        # | THEN |
-        self.assertEqual(None, self.node_inst.processor_summary.count)
-        self.assertEqual(None, self.node_inst.processor_summary.health)
-
-        # | GIVEN |
-        self.node_inst._json.pop('Processors')
-        # | WHEN |
-        self.node_inst._parse_attributes()
-        # | THEN |
-        self.assertEqual(None, self.node_inst.processor_summary)
+        with open('rsd_lib/tests/unit/json_samples/system.json',
+                  'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.node_inst.system,
+                              system.System)
 
     def test_delete_node(self):
         self.node_inst.delete_node()
