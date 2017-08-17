@@ -1,0 +1,28 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Drive/Links/Members/$entity",
+    "@odata.id": "/redfish/v1/Services/1/Drives/1",
+    "@odata.type": "#PhysicalDrive.v1_0_0.PhysicalDrive",
+    "Id": "1","Name": "Simple drive"
+    "Description": "Physical drive"
+    "Interface": < { "PCIe", "SAS", "SATA" } >
+    "CapacityGiB": 500,
+    "Type": < { "HDD", "SSD" } >,
+    "RPM": 0,
+    "Manufacturer": "Intel",
+    "Model": "S3710",
+    "SerialNumber": "XYZ123456789",
+    "Status": {
+        "State": < { "Enabled", "Disabled", "Offline", "InTest", "Starting", "Absent" } >,
+        "Health": < {"OK", "Warning", "Critical" } >,
+        "HealthRollup": < {"OK", "Warning", "Critical" } >
+    },
+    "Oem": {},
+    "Links": {
+        "UsedBy": [
+            {
+                "@odata.id": "/redfish/v1/Services/1/LogicalDrives/1"
+        }
+    ],
+    "Oem": {}
+    }
+}

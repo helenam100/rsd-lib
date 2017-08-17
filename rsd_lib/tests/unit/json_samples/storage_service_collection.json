@@ -1,0 +1,13 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StorageServices",
+    "@odata.id": "/redfish/v1/Services",
+    "@odata.type": "#StorageServiceCollection.StorageServiceCollection",
+    "Name": "Storage Services Collection",
+    "Description": "Collection of RSD Storage Services",
+    "Members@odata.count": 1,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Services/RSS1"
+        }
+    ]
+}

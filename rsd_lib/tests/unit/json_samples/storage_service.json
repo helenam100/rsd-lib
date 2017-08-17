@@ -1,0 +1,30 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Services/Members/1/$entity",
+    "@odata.id": "/redfish/v1/Services/RSS1",
+    "@odata.type": "#StorageService.v1 0 0.StorageService",
+    "Id": "RSS1",
+    "Name": "Storage Service",
+    "Description": "Storage Service",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "RemoteTargets": {
+        "@odata.id": "/redfish/v1/Services/RSS1/Targets"
+    },
+    "LogicalDrives": {
+        "@odata.id": "/redfish/v1/Services/RSS1/LogicalDrives"
+    },
+    "Drives": {
+        "@odata.id": "/redfish/v1/Services/RSS1/Drives"
+    },
+    "Oem": {},
+    "Links": {
+        "ManagedBy": [
+            {
+                "@odata.id": "/redfish/v1/Managers/RSS"
+            }
+        ],
+        "Oem": {}
+    }
+} 

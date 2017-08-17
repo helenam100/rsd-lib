@@ -7,6 +7,9 @@
     "Systems": {
         "@odata.id": "/redfish/v1/Systems"
     },
+    "Services": {
+        "@odata.id": "/redfish/v1/Services"
+    },
     "Chassis": {
         "@odata.id": "/redfish/v1/Chassis"
     },
