@@ -21,6 +21,7 @@ import testtools
 
 from rsd_lib.resources.fabric import endpoint
 from rsd_lib.resources.fabric import fabric
+from rsd_lib.resources.fabric import zone
 
 
 class FabricTestCase(testtools.TestCase):
@@ -45,6 +46,7 @@ class FabricTestCase(testtools.TestCase):
         self.assertEqual('PCIe', self.fabric_inst.fabric_type)
         self.assertEqual(5, self.fabric_inst.max_zones)
         self.assertIsNone(self.fabric_inst._endpoints)
+        self.assertIsNone(self.fabric_inst._zones)
 
     def test__get_endpoint_collection_path_missing_attr(self):
         self.fabric_inst._json.pop('Endpoints')
@@ -100,6 +102,61 @@ class FabricTestCase(testtools.TestCase):
         # | WHEN & THEN |
         self.assertIsInstance(self.fabric_inst.endpoints,
                               endpoint.EndpointCollection)
+
+    def test__get_zone_collection_path_missing_attr(self):
+        self.fabric_inst._json.pop('Zones')
+        self.assertRaisesRegex(
+            exceptions.MissingAttributeError, 'attribute Zones',
+            self.fabric_inst._get_zone_collection_path)
+
+    def test_zones(self):
+        # check for the underneath variable value
+        self.assertIsNone(self.fabric_inst._zones)
+        # | GIVEN |
+        self.conn.get.return_value.json.reset_mock()
+        with open('rsd_lib/tests/unit/json_samples/'
+                  'zone_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN |
+        actual_zones = self.fabric_inst.zones
+        # | THEN |
+        self.assertIsInstance(actual_zones,
+                              zone.ZoneCollection)
+        self.conn.get.return_value.json.assert_called_once_with()
+
+        # reset mock
+        self.conn.get.return_value.json.reset_mock()
+        # | WHEN & THEN |
+        # tests for same object on invoking subsequently
+        self.assertIs(actual_zones,
+                      self.fabric_inst.zones)
+        self.conn.get.return_value.json.assert_not_called()
+
+    def test_zones_on_refresh(self):
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/'
+                  'zone_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.fabric_inst.zones,
+                              zone.ZoneCollection)
+
+        # On refreshing the fabric instance...
+        with open('rsd_lib/tests/unit/json_samples/'
+                  'fabric.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.fabric_inst.refresh()
+
+        # | WHEN & THEN |
+        self.assertIsNone(self.fabric_inst._zones)
+
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/'
+                  'zone_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.fabric_inst.zones,
+                              zone.ZoneCollection)
 
 
 class FabricCollectionTestCase(testtools.TestCase):

@@ -19,6 +19,7 @@ from sushy import exceptions
 from sushy.resources import base
 
 from rsd_lib.resources.fabric import endpoint
+from rsd_lib.resources.fabric import zone
 
 LOG = logging.getLogger(__name__)
 
@@ -41,6 +42,8 @@ class Fabric(base.ResourceBase):
     """The fabric name"""
 
     _endpoints = None  # ref to EndpointCollection instance
+
+    _zones = None  # ref to ZoneCollection instance
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a Fabric
@@ -75,9 +78,32 @@ class Fabric(base.ResourceBase):
 
         return self._endpoints
 
+    def _get_zone_collection_path(self):
+        """Helper function to find the ZoneCollection path"""
+        zone_col = self.json.get('Zones')
+        if not zone_col:
+            raise exceptions.MissingAttributeError(attribute='Zones',
+                                                   resource=self._path)
+        return zone_col.get('@odata.id')
+
+    @property
+    def zones(self):
+        """Property to provide reference to `ZoneCollection` instance
+
+        It is calculated once when it is queried for the first time. On
+        refresh, this property is reset.
+        """
+        if self._zones is None:
+            self._zones = zone.ZoneCollection(
+                self._conn, self._get_zone_collection_path(),
+                redfish_version=self.redfish_version)
+
+        return self._zones
+
     def refresh(self):
         super(Fabric, self).refresh()
         self._endpoints = None
+        self._zones = None
 
 
 class FabricCollection(base.ResourceCollectionBase):
