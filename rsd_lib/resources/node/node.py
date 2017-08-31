@@ -19,6 +19,7 @@ from sushy import exceptions
 from sushy.resources import base
 from sushy.resources import common
 from sushy.resources.system import system
+from sushy import utils
 
 from rsd_lib.resources.node import constants as node_cons
 from rsd_lib.resources.node import mappings as node_maps
@@ -33,14 +34,16 @@ class AssembleActionField(base.CompositeField):
 
 class AttachEndpointActionField(base.CompositeField):
     allowed_values = base.Field('Resource@Redfish.AllowableValues',
-                                adapter=list)
+                                default=[],
+                                adapter=utils.get_members_identities)
 
     target_uri = base.Field('target', required=True)
 
 
 class DetachEndpointActionField(base.CompositeField):
     allowed_values = base.Field('Resource@Redfish.AllowableValues',
-                                adapter=list)
+                                default=[],
+                                adapter=utils.get_members_identities)
 
     target_uri = base.Field('target', required=True)
 
@@ -282,6 +285,67 @@ class Node(base.ResourceBase):
                                          redfish_version=self.redfish_version)
 
         return self._system
+
+    def _get_attach_endpoint_action_element(self):
+        attach_endpoint_action = self._actions.attach_endpoint
+        if not attach_endpoint_action:
+            raise exceptions.MissingActionError(
+                action='#ComposedNode.AttachEndpoint',
+                resource=self._path)
+        return attach_endpoint_action
+
+    def attach_endpoint(self, endpoint=None, capacity=None):
+        """Attach endpoint from available pool to composed node
+
+        :param endpoint: Link to endpoint to attach.
+        :param capacity: Requested capacity of the drive in GiB.
+        :raises: InvalidParameterValueError
+        :raises: BadRequestError if at least one param isn't specified
+        """
+        attach_action = self._get_attach_endpoint_action_element()
+        valid_endpoints = attach_action.allowed_values
+        target_uri = attach_action.target_uri
+
+        if endpoint not in valid_endpoints:
+            raise exceptions.InvalidParameterValueError(
+                parameter='endpoint', value=endpoint,
+                valid_values=valid_endpoints)
+
+        data = {}
+        if endpoint is not None:
+            data['Resource'] = {'@odata.id': endpoint}
+        if capacity is not None:
+            data['CapacityGiB'] = capacity
+
+        self._conn.post(target_uri, data=data)
+
+    def _get_detach_endpoint_action_element(self):
+        detach_endpoint_action = self._actions.detach_endpoint
+        if not detach_endpoint_action:
+            raise exceptions.MissingActionError(
+                action='#ComposedNode.DetachEndpoint',
+                resource=self._path)
+        return detach_endpoint_action
+
+    def detach_endpoint(self, endpoint):
+        """Detach already attached endpoint from composed node
+
+        :param endpoint: Link to endpoint to detach
+        :raises: InvalidParameterValueError
+        :raises: BadRequestError
+        """
+        detach_action = self._get_detach_endpoint_action_element()
+        valid_endpoints = detach_action.allowed_values
+        target_uri = detach_action.target_uri
+
+        if endpoint not in valid_endpoints:
+            raise exceptions.InvalidParameterValueError(
+                parameter='endpoint', value=endpoint,
+                valid_values=valid_endpoints)
+
+        data = {'Resource': endpoint}
+
+        self._conn.post(target_uri, data=data)
 
     def delete_node(self):
         """Delete (disassemble) the node.

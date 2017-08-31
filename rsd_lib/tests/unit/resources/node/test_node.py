@@ -104,6 +104,28 @@ class NodeTestCase(testtools.TestCase):
                          "ComposedNode.Assemble",
                          value.target_uri)
 
+    def test__get_attach_endpoint_action_element(self):
+        value = self.node_inst._get_attach_endpoint_action_element()
+        self.assertEqual('/redfish/v1/Nodes/Node1/Actions/'
+                         'ComposedNode.AttachEndpoint',
+                         value.target_uri)
+
+        self.assertEqual(('/redfish/v1/Chassis/PCIeSwitchChassis/'
+                          'Drives/Disk.Bay.1',
+                          '/redfish/v1/Chassis/PCIeSwitchChassis/'
+                          'Drives/Disk.Bay.2'),
+                         value.allowed_values)
+
+    def test__get_detach_endpoint_action_element(self):
+        value = self.node_inst._get_detach_endpoint_action_element()
+        self.assertEqual('/redfish/v1/Nodes/Node1/Actions/'
+                         'ComposedNode.DetachEndpoint',
+                         value.target_uri)
+
+        self.assertEqual(tuple(['/redfish/v1/Chassis/'
+                         'PCIeSwitchChassis/Drives/Disk.Bay.3']),
+                         value.allowed_values)
+
     def test_get_allowed_reset_node_values(self):
         values = self.node_inst.get_allowed_reset_node_values()
         expected = set([node_cons.RESET_GRACEFUL_SHUTDOWN,
@@ -145,6 +167,34 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst.assemble_node()
         self.node_inst._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Node1/Actions/ComposedNode.Assemble')
+
+    def test_attach_endpoint(self):
+        self.node_inst.attach_endpoint(
+            endpoint='/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.1',
+            capacity=100)
+        self.node_inst._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Node1/Actions/ComposedNode.AttachEndpoint',
+            data={'Resource': {'@odata.id': '/redfish/v1/Chassis/'
+                               'PCIeSwitchChassis/Drives/Disk.Bay.1'},
+                  'CapacityGiB': 100})
+
+    def test_attach_endpoint_invalid_parameter(self):
+        self.assertRaises(exceptions.InvalidParameterValueError,
+                          self.node_inst.attach_endpoint,
+                          endpoint='invalid')
+
+    def test_detach_endpoint(self):
+        self.node_inst.detach_endpoint(
+            endpoint='/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.3')
+        self.node_inst._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Node1/Actions/ComposedNode.DetachEndpoint',
+            data={'Resource': '/redfish/v1/Chassis/PCIeSwitchChassis/'
+                              'Drives/Disk.Bay.3'})
+
+    def test_detach_endpoint_invalid_parameter(self):
+        self.assertRaises(exceptions.InvalidParameterValueError,
+                          self.node_inst.detach_endpoint,
+                          endpoint='invalid')
 
     def test_reset_node_invalid_value(self):
         self.assertRaises(exceptions.InvalidParameterValueError,
