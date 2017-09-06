@@ -1,0 +1,18 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#EndpointCollection.EndpointCollection",
+    "@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints",
+    "@odata.type": "#EndpointCollection.EndpointCollection",
+    "Name": "PCIe Endpoint Collection",
+    "Members@odata.count": 3,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints/NVMeDrivePF1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints/NVMeDrivePF2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints/HostRootComplex1"
+        }
+    ]
+}

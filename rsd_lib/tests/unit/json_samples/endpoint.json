@@ -1,0 +1,49 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Endpoint.Endpoint",
+    "@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints/NVMeDrivePF1",
+    "@odata.type": "#Endpoint.v1_0_0.Endpoint",
+    "Id": "NVMeDrivePF1",
+    "Name": "NVMe Drive",
+    "Description": "The PCIe Physical function of an 850GB NVMe drive",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "HealthRollUp": "OK"
+    },
+    "EndpointProtocol": "PCIe",
+    "Identifiers": [
+        {
+            "DurableNameFormat": "UUID",
+            "DurableName": "00000000-0000-0000-0000-000000000000"
+        }
+    ],
+    "ConnectedEntities": [
+        {
+            "EntityType": "Drive",
+            "EntityRole": "Target",
+            "EntityLink": {
+                "@odata.id": "/redfish/v1/Chassis/PCIeSwitch1/Drives/Disk.Bay.0"
+            },
+            "Identifiers": [
+                {
+                    "DurableNameFormat": "UUID",
+                    "DurableName": "00000000-0000-0000-0000-000000000000"
+                }
+            ],
+            "Oem": {}
+        }
+    ],
+    "Redundancy": [],
+    "HostReservationMemoryBytes": 1000,
+    "Links": {
+        "Ports": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/PCIe/Switches/1/Ports/Down1"
+            }
+        ]
+    },
+    "Oem": {},
+    "Actions": {
+        "Oem": {}
+    }
+}
