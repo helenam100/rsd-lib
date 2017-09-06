@@ -1,0 +1,16 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ZoneCollection.ZoneCollection",
+    "@odata.id": "/redfish/v1/Fabrics/PCIe/Zones",
+    "@odata.type": "#ZoneCollection.ZoneCollection",
+    "Name": "PCIe Zone Collection",
+    "Description": "PCIe Zone Collection",
+    "Members@odata.count": 2,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/PCIe/Zones/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/PCIe/Zones/2"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Zone.Zone",
+    "@odata.id": "/redfish/v1/Fabrics/PCIe/Zones/1",
+    "@odata.type": "#Zone.v1_0_0.Zone",
+    "Id": "1",
+    "Name": "PCIe Zone 1",
+    "Description": "PCIe Zone 1",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Links": {
+        "Endpoints": [
+            {"@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints/HostRootComplex1"},
+            {"@odata.id": "/redfish/v1/Fabrics/PCIe/Endpoints/NVMeDrivePF2"}
+        ],
+        "InvolvedSwitches": [
+            {"@odata.id": "/redfish/v1/Fabrics/PCIe/Switches/1"}
+        ]
+    },
+    "Oem": {}
+}
