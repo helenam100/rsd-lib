@@ -306,7 +306,7 @@ class Node(base.ResourceBase):
         valid_endpoints = attach_action.allowed_values
         target_uri = attach_action.target_uri
 
-        if endpoint not in valid_endpoints:
+        if endpoint and endpoint not in valid_endpoints:
             raise exceptions.InvalidParameterValueError(
                 parameter='endpoint', value=endpoint,
                 valid_values=valid_endpoints)

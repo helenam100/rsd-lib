@@ -183,6 +183,12 @@ class NodeTestCase(testtools.TestCase):
                           self.node_inst.attach_endpoint,
                           endpoint='invalid')
 
+    def test_attach_endpoint_only_with_capacity_parameter(self):
+        self.node_inst.attach_endpoint(capacity=100)
+        self.node_inst._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Node1/Actions/ComposedNode.AttachEndpoint',
+            data={'CapacityGiB': 100})
+
     def test_detach_endpoint(self):
         self.node_inst.detach_endpoint(
             endpoint='/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.3')
