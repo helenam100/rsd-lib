@@ -31,6 +31,9 @@
     "Nodes": {
         "@odata.id": "/redfish/v1/Nodes"
     },
+    "Fabrics" : {
+        "@odata.id" : "/redfish/v1/Fabrics"
+    },
     "Links": {
         "Sessions": {
             "@odata.id": "/redfish/v1/SessionService/Sessions"

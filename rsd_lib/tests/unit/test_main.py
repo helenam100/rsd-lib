@@ -20,6 +20,7 @@ from sushy import connector
 import testtools
 
 from rsd_lib import main
+from rsd_lib.resources.fabric import fabric
 from rsd_lib.resources.node import node
 
 
@@ -47,4 +48,18 @@ class RSDLibTestCase(testtools.TestCase):
         self.rsd.get_node('fake-node-id')
         mock_node.assert_called_once_with(
             self.rsd._conn, 'fake-node-id',
+            redfish_version=self.rsd.redfish_version)
+
+    @mock.patch.object(fabric, 'FabricCollection', autospec=True)
+    def test_get_fabric_collection(self, mock_fabric_collection):
+        self.rsd.get_fabric_collection()
+        mock_fabric_collection.assert_called_once_with(
+            self.rsd._conn, '/redfish/v1/Fabrics',
+            redfish_version=self.rsd.redfish_version)
+
+    @mock.patch.object(fabric, 'Fabric', autospec=True)
+    def test_get_fabric(self, mock_fabric):
+        self.rsd.get_fabric('fake-fabric-id')
+        mock_fabric.assert_called_once_with(
+            self.rsd._conn, 'fake-fabric-id',
             redfish_version=self.rsd.redfish_version)

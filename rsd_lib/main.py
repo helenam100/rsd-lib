@@ -17,6 +17,7 @@ import sushy
 from sushy.resources import base
 
 from rsd_lib.resources import chassis
+from rsd_lib.resources.fabric import fabric
 from rsd_lib.resources.node import node
 from rsd_lib.resources.storage_service import storage_service
 
@@ -32,6 +33,9 @@ class RSDLib(sushy.Sushy):
     _storage_service_path = base.Field(['Services',
                                         '@odata.id'], required=True)
     """StorageServiceCollection path"""
+
+    _fabrics_path = base.Field(['Fabrics', '@odata.id'], required=True)
+    """FabricCollection path"""
 
     def get_node_collection(self):
         """Get the NodeCollection object
@@ -93,3 +97,24 @@ class RSDLib(sushy.Sushy):
         return chassis.Chassis(self._conn,
                                identity,
                                redfish_version=self.redfish_version)
+
+    def get_fabric_collection(self):
+        """Get the FabricCollection object
+
+        :raises: MissingAttributeError, if the collection attribute is
+            not found
+        :returns: a FabricCollection object
+        """
+        return fabric.FabricCollection(self._conn,
+                                       self._fabrics_path,
+                                       redfish_version=self.redfish_version)
+
+    def get_fabric(self, identity):
+        """Given the identity return a Fabric object
+
+        :param identity: The identity of the Fabric resource
+        :returns: The Fabric object
+        """
+        return fabric.Fabric(self._conn,
+                             identity,
+                             redfish_version=self.redfish_version)
