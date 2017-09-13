@@ -14,6 +14,7 @@
 #    under the License.
 
 import logging
+import validictory
 
 from sushy import exceptions
 from sushy.resources import base
@@ -23,6 +24,7 @@ from sushy import utils
 
 from rsd_lib.resources.node import constants as node_cons
 from rsd_lib.resources.node import mappings as node_maps
+from rsd_lib.resources.node import schemas as node_schemas
 
 
 LOG = logging.getLogger(__name__)
@@ -389,13 +391,73 @@ class NodeCollection(base.ResourceCollectionBase):
                 resource=self._path)
         return compose_action
 
-    def compose_node(self, properties={}):
+    def _create_compose_request(self, name=None, description=None,
+                                processor_req=None, memory_req=None,
+                                remote_drive_req=None, local_drive_req=None,
+                                ethernet_interface_req=None):
+
+        request = {}
+
+        if name is not None:
+            request['Name'] = name
+        if description is not None:
+            request['Description'] = description
+
+        if processor_req is not None:
+            validictory.validate(processor_req,
+                                 node_schemas.processor_req_schema,
+                                 required_by_default=False)
+            request['Processors'] = processor_req
+
+        if memory_req is not None:
+            validictory.validate(memory_req,
+                                 node_schemas.memory_req_schema,
+                                 required_by_default=False)
+            request['Memory'] = memory_req
+
+        if remote_drive_req is not None:
+            validictory.validate(remote_drive_req,
+                                 node_schemas.remote_drive_req_schema,
+                                 required_by_refault=False)
+            request['RemoteDrives'] = remote_drive_req
+
+        if local_drive_req is not None:
+            validictory.validate(local_drive_req,
+                                 node_schemas.local_drive_req_schema,
+                                 required_by_default=False)
+            request['LocalDrives'] = local_drive_req
+
+        if ethernet_interface_req is not None:
+            validictory.validate(ethernet_interface_req,
+                                 node_schemas.ethernet_interface_req_schema,
+                                 required_by_default=False)
+            request['EthernetInterfaces'] = ethernet_interface_req
+
+        return request
+
+    def compose_node(self, name=None, description=None,
+                     processor_req=None, memory_req=None,
+                     remote_drive_req=None, local_drive_req=None,
+                     ethernet_interface_req=None):
         """Compose a node from RackScale hardware
 
-        :param properties: The properties requested for node composition
+        :param name: Name of node
+        :param description: Description of node
+        :param processor_req: JSON for node processors
+        :param memory_req: JSON for node memory modules
+        :param remote_drive_req: JSON for node remote drives
+        :param local_drive_req: JSON for node local drives
+        :param ethernet_interface_req: JSON for node ethernet ports
         :returns: The location of the composed node
         """
         target_uri = self._get_compose_action_element().target_uri
+        properties = self._create_compose_request(
+            name=name, description=description,
+            processor_req=processor_req,
+            memory_req=memory_req,
+            remote_drive_req=remote_drive_req,
+            local_drive_req=local_drive_req,
+            ethernet_interface_req=ethernet_interface_req)
         resp = self._conn.post(target_uri, data=properties)
         LOG.info("Node created at %s", resp.headers['Location'])
         node_url = resp.headers['Location']
