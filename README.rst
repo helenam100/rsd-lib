@@ -4,16 +4,12 @@ rsd-lib
 
 Extended Sushy library for Rack Scale Design
 
-Please fill here a long description which must be at least 3 lines wrapped on
-80 cols, so that distribution package maintainers can use it in their packages.
-Note that this is a hard requirement.
+This library extends the existing Sushy library to include functionality
+for Intel RackScale Design enabled hardware. Capabilities include logical
+node composition and decomposition, remote storage discovery and composition,
+and NVMe over PCIe drive attaching and detaching to logical nodes.
 
 * Free software: Apache license
 * Documentation: http://docs.openstack.org/developer/rsd-lib
 * Source: http://git.openstack.org/cgit/openstack/rsd-lib
 * Bugs: http://bugs.launchpad.net/https://launchpad.net/python-rsdclient
-
-Features
---------
-
-* TODO
