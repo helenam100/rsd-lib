@@ -17,7 +17,32 @@ import logging
 
 from sushy.resources import base
 
+from rsd_lib.resources import base as rsd_base
+
 LOG = logging.getLogger(__name__)
+
+
+class TargetLunField(rsd_base.FieldList):
+    lun = base.Field('LUN')
+
+
+class ISCSIAddressField(base.CompositeField):
+    target_lun = TargetLunField('TargetLUN')
+    target_iqn = base.Field('TargetIQN')
+    target_portal_ip = base.Field('TargetPortalIP')
+    target_portal_port = base.Field('TargetPortalPort')
+
+
+class AddressesField(rsd_base.FieldList):
+    iscsi = ISCSIAddressField('iSCSI')
+
+
+class ISCSIInitiatorField(base.CompositeField):
+    iqn = base.Field('InitiatorIQN')
+
+
+class InitiatorsField(rsd_base.FieldList):
+    iscsi = ISCSIInitiatorField('iSCSI')
 
 
 class RemoteTarget(base.ResourceBase):
@@ -28,9 +53,9 @@ class RemoteTarget(base.ResourceBase):
     target_type = base.Field('Type')
     """Type of target"""
 
-    addresses = base.Field('Addresses')
+    addresses = AddressesField('Addresses')
 
-    initiator = base.Field('Initiator')
+    initiators = InitiatorsField('Initiator')
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a RemoteTarget
