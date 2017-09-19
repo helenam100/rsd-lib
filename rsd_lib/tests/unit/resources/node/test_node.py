@@ -14,11 +14,12 @@
 #    under the License.
 
 import json
-
 import mock
+import testtools
+import validictory
+
 from sushy import exceptions
 from sushy.resources.system import system
-import testtools
 
 from rsd_lib.resources.node import constants as node_cons
 from rsd_lib.resources.node import node
@@ -392,24 +393,32 @@ class NodeCollectionTestCase(testtools.TestCase):
         self.assertEqual('/redfish/v1/Nodes/Actions/Allocate',
                          value.target_uri)
 
-    def test_compose_node_no_properties(self):
+    def test_compose_node_no_reqs(self):
         result = self.node_col.compose_node()
         self.node_col._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Actions/Allocate', data={})
         self.assertEqual(result, '/redfish/v1/Nodes/1')
 
-    def test_compose_node_properties(self):
-        props = {
+    def test_compose_node_reqs(self):
+        reqs = {
             'Name': 'test',
             'Description': 'this is a test node',
             'Processors': [{
-                'TotalCores': 2
+                'TotalCores': 4
             }],
             'Memory': [{
-                'CapacityMiB': 16000
+                'CapacityMiB': 8000
             }]
         }
-        result = self.node_col.compose_node(properties=props)
+        result = self.node_col.compose_node(
+            name='test', description='this is a test node',
+            processor_req=[{'TotalCores': 4}],
+            memory_req=[{'CapacityMiB': 8000}])
         self.node_col._conn.post.assert_called_once_with(
-            '/redfish/v1/Nodes/Actions/Allocate', data=props)
+            '/redfish/v1/Nodes/Actions/Allocate', data=reqs)
         self.assertEqual(result, '/redfish/v1/Nodes/1')
+
+    def test_compose_node_invalid_reqs(self):
+        self.assertRaises(validictory.validator.FieldValidationError,
+                          self.node_col.compose_node,
+                          processor_req='invalid')
