@@ -91,3 +91,77 @@ Composing and using a logical node
 
   # Delete/Deallocate the composed node
   node_inst.delete_node()
+
+-----------------------------------
+Discovering Remote Storage Services
+-----------------------------------
+
+  # Get the storage service collection object
+  storage_service_col = rsd.get_storage_service_collection()
+
+  # Get storage service instance
+  storage_service = storage_service_col.get_members()[0]
+
+  # Get storage service instance with ID
+  storage_service2 = rsd.get_storage_service(storage_service.identity)
+
+  # Get physical drives contained by storage service
+  physical_drive_col = storage_service.physical_drives()
+
+  Get a physical drive from the collection
+  physical_drive = physical_drive_col.get_members()[0]
+
+  # Get capacity of the physical drive
+  print(physical_drive.capacity_gib)
+
+  # Get logical drives contained by storage service
+  logical_drive_col = storage_service.logical_drives()
+
+  # Get logical drive
+  logical_drive = logical_drive_col.get_members()[0]
+
+  # Get type of a logical drive
+  print(logical_drive.drive_type)
+
+  # Get remote target collection
+  remote_target_col = storage_service.remote_targets()
+
+  # Get remote target instance
+  target = remote_target_col.get_members()[0]
+
+  # Get Initiator IQN of a remote target
+  print(target.initiators[0].iscsi.iqn)
+
+----------------------------------------------------
+Discovering NVMe Devices and Attaching them to Nodes
+----------------------------------------------------
+
+  # Get the fabric collection object
+  fabric_col = rsd.get_fabric_collection()
+
+  # Get fabric instance
+  fabric = fabric_col.get_members()[0]
+
+  # Get a fabric instance with an ID
+  fabric2 = rsd.get_fabric(fabric.identity)
+
+  # Get endpoint collection
+  endpoint_col = fabric.endpoints()
+
+  # Get endpoint instance
+  endpoint = endpoint_col.get_members()[0]
+
+  # Get type of connected entity
+  print(endpoint.connected_entities[0].entity_type)
+
+  # Get link to entity
+  drive_link = endpoint.connected_entities[0].entity_link
+
+  # Get a composed node instance
+  node_inst = node_col.get_members()[0]
+
+  # Attach the endpoint to the composed node
+  node_inst.attach_endpoint(endpoint=drive_link)
+
+  # Detach the endpoint from the composed node
+  node_inst.detach_endpoint(endpoint=drive_link)
