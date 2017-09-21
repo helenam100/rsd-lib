@@ -24,6 +24,11 @@ from rsd_lib.resources.fabric import zone
 LOG = logging.getLogger(__name__)
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+
+
 class Fabric(base.ResourceBase):
 
     description = base.Field('Description')
@@ -40,6 +45,8 @@ class Fabric(base.ResourceBase):
 
     name = base.Field('Name')
     """The fabric name"""
+
+    status = StatusField('Status')
 
     _endpoints = None  # ref to EndpointCollection instance
 

@@ -25,6 +25,11 @@ from rsd_lib.resources.storage_service import remote_target
 LOG = logging.getLogger(__name__)
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+
+
 class StorageService(base.ResourceBase):
 
     description = base.Field('Description')
@@ -35,6 +40,9 @@ class StorageService(base.ResourceBase):
 
     name = base.Field('Name')
     """The storage service name"""
+
+    status = StatusField('Status')
+    """The storage service status"""
 
     _logical_drives = None  # ref to LogicalDriveCollection instance
 

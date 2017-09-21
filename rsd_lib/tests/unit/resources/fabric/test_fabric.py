@@ -45,6 +45,8 @@ class FabricTestCase(testtools.TestCase):
         self.assertEqual('PCIe Fabric', self.fabric_inst.name)
         self.assertEqual('PCIe', self.fabric_inst.fabric_type)
         self.assertEqual(5, self.fabric_inst.max_zones)
+        self.assertEqual('Enabled', self.fabric_inst.status.state)
+        self.assertEqual('OK', self.fabric_inst.status.health)
         self.assertIsNone(self.fabric_inst._endpoints)
         self.assertIsNone(self.fabric_inst._zones)
 
