@@ -65,6 +65,12 @@ class NodeCollectionActionsField(base.CompositeField):
     compose = ComposeNodeActionField('#ComposedNodeCollection.Allocate')
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
+
+
 class BootField(base.CompositeField):
     allowed_values = base.Field(
         'BootSourceOverrideTarget@Redfish.AllowableValues',
@@ -127,6 +133,9 @@ class Node(base.ResourceBase):
     power_state = base.MappedField('PowerState',
                                    node_maps.NODE_POWER_STATE_MAP)
     """The node power state"""
+
+    status = StatusField('Status')
+    """The node status"""
 
     uuid = base.Field('UUID')
     """The node UUID"""

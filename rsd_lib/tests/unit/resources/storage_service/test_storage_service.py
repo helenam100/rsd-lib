@@ -45,6 +45,8 @@ class StorageServiceTestCase(testtools.TestCase):
                          self.storage_service_inst.description)
         self.assertEqual('RSS1', self.storage_service_inst.identity)
         self.assertEqual('Storage Service', self.storage_service_inst.name)
+        self.assertEqual('Enabled', self.storage_service_inst.status.state)
+        self.assertEqual('OK', self.storage_service_inst.status.health)
         self.assertIsNone(self.storage_service_inst._logical_drives)
         self.assertIsNone(self.storage_service_inst._physical_drives)
         self.assertIsNone(self.storage_service_inst._remote_targets)

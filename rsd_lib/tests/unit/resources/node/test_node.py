@@ -50,6 +50,9 @@ class NodeTestCase(testtools.TestCase):
                          self.node_inst.uuid)
         self.assertEqual(node_cons.NODE_POWER_STATE_ON,
                          self.node_inst.power_state)
+        self.assertEqual('Enabled', self.node_inst.status.state)
+        self.assertEqual('OK', self.node_inst.status.health)
+        self.assertEqual('OK', self.node_inst.status.health_rollup)
         self.assertEqual(32, self.node_inst.memory_summary.size_gib)
         self.assertEqual('OK', self.node_inst.memory_summary.health)
         self.assertEqual(2, self.node_inst.processor_summary.count)
