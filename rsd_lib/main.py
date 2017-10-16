@@ -37,6 +37,9 @@ class RSDLib(sushy.Sushy):
     _fabrics_path = base.Field(['Fabrics', '@odata.id'], required=True)
     """FabricCollection path"""
 
+    _rsd_api_version = base.Field(['Oem', 'Intel_RackScale', 'ApiVersion'],
+                                  required=True)
+
     def get_node_collection(self):
         """Get the NodeCollection object
 

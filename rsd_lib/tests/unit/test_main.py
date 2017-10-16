@@ -36,6 +36,10 @@ class RSDLibTestCase(testtools.TestCase):
         self.rsd = main.RSDLib('http://foo.bar:8442', username='foo',
                                password='bar', verify=True)
 
+    def test__parse_attributes(self):
+        self.rsd._parse_attributes()
+        self.assertEqual("2.2", self.rsd._rsd_api_version)
+
     @mock.patch.object(node, 'NodeCollection', autospec=True)
     def test_get_node_collection(self, mock_node_collection):
         self.rsd.get_node_collection()
