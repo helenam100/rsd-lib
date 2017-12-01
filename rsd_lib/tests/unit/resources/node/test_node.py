@@ -14,9 +14,9 @@
 #    under the License.
 
 import json
+import jsonschema
 import mock
 import testtools
-import validictory
 
 from sushy import exceptions
 from sushy.resources.system import system
@@ -422,6 +422,6 @@ class NodeCollectionTestCase(testtools.TestCase):
         self.assertEqual(result, '/redfish/v1/Nodes/1')
 
     def test_compose_node_invalid_reqs(self):
-        self.assertRaises(validictory.validator.FieldValidationError,
+        self.assertRaises(jsonschema.exceptions.ValidationError,
                           self.node_col.compose_node,
                           processor_req='invalid')

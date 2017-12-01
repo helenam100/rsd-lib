@@ -13,8 +13,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from jsonschema import validate
 import logging
-import validictory
 
 from sushy import exceptions
 from sushy.resources import base
@@ -413,33 +413,28 @@ class NodeCollection(base.ResourceCollectionBase):
             request['Description'] = description
 
         if processor_req is not None:
-            validictory.validate(processor_req,
-                                 node_schemas.processor_req_schema,
-                                 required_by_default=False)
+            validate(processor_req,
+                     node_schemas.processor_req_schema)
             request['Processors'] = processor_req
 
         if memory_req is not None:
-            validictory.validate(memory_req,
-                                 node_schemas.memory_req_schema,
-                                 required_by_default=False)
+            validate(memory_req,
+                     node_schemas.memory_req_schema)
             request['Memory'] = memory_req
 
         if remote_drive_req is not None:
-            validictory.validate(remote_drive_req,
-                                 node_schemas.remote_drive_req_schema,
-                                 required_by_refault=False)
+            validate(remote_drive_req,
+                     node_schemas.remote_drive_req_schema)
             request['RemoteDrives'] = remote_drive_req
 
         if local_drive_req is not None:
-            validictory.validate(local_drive_req,
-                                 node_schemas.local_drive_req_schema,
-                                 required_by_default=False)
+            validate(local_drive_req,
+                     node_schemas.local_drive_req_schema)
             request['LocalDrives'] = local_drive_req
 
         if ethernet_interface_req is not None:
-            validictory.validate(ethernet_interface_req,
-                                 node_schemas.ethernet_interface_req_schema,
-                                 required_by_default=False)
+            validate(ethernet_interface_req,
+                     node_schemas.ethernet_interface_req_schema)
             request['EthernetInterfaces'] = ethernet_interface_req
 
         return request
