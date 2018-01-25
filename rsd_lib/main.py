@@ -16,7 +16,7 @@
 import sushy
 from sushy.resources import base
 
-from rsd_lib.resources import chassis
+from rsd_lib.resources.chassis import chassis
 from rsd_lib.resources.fabric import fabric
 from rsd_lib.resources.node import node
 from rsd_lib.resources.storage_service import storage_service
