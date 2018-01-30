@@ -22,9 +22,9 @@ from sushy.resources import common
 from sushy.resources.system import system
 from sushy import utils
 
-from rsd_lib.resources.node import constants as node_cons
-from rsd_lib.resources.node import mappings as node_maps
-from rsd_lib.resources.node import schemas as node_schemas
+from rsd_lib.resources.v2_1.node import constants as node_cons
+from rsd_lib.resources.v2_1.node import mappings as node_maps
+from rsd_lib.resources.v2_1.node import schemas as node_schemas
 
 
 LOG = logging.getLogger(__name__)

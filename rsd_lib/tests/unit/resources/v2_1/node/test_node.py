@@ -21,8 +21,8 @@ import testtools
 from sushy import exceptions
 from sushy.resources.system import system
 
-from rsd_lib.resources.node import constants as node_cons
-from rsd_lib.resources.node import node
+from rsd_lib.resources.v2_1.node import constants as node_cons
+from rsd_lib.resources.v2_1.node import node
 from rsd_lib.tests.unit.fakes import request_fakes
 
 

@@ -16,7 +16,7 @@ import mock
 
 from sushy.tests.unit import base
 
-from rsd_lib.resources.chassis import chassis
+from rsd_lib.resources.v2_1.chassis import chassis
 
 
 class TestChassis(base.TestCase):

@@ -13,7 +13,7 @@ Composing and using a logical node
 
   # Get a connection with the RSD endpoint
   rsd = rsd_lib.RSDLib('http://localhost:8443/redfish/v1',
-                       username='foo', password='bar')
+                       username='foo', password='bar').factory()
 
   # Get the node collection object
   node_col = rsd.get_node_collection()

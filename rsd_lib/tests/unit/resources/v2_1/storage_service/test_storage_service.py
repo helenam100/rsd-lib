@@ -19,10 +19,10 @@ import mock
 from sushy import exceptions
 import testtools
 
-from rsd_lib.resources.storage_service import logical_drive
-from rsd_lib.resources.storage_service import physical_drive
-from rsd_lib.resources.storage_service import remote_target
-from rsd_lib.resources.storage_service import storage_service
+from rsd_lib.resources.v2_1.storage_service import logical_drive
+from rsd_lib.resources.v2_1.storage_service import physical_drive
+from rsd_lib.resources.v2_1.storage_service import remote_target
+from rsd_lib.resources.v2_1.storage_service import storage_service
 
 
 class StorageServiceTestCase(testtools.TestCase):

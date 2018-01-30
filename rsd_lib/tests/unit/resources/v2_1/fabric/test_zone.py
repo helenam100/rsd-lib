@@ -18,7 +18,7 @@ import json
 import mock
 import testtools
 
-from rsd_lib.resources.fabric import zone
+from rsd_lib.resources.v2_1.fabric import zone
 
 
 class ZoneTestCase(testtools.TestCase):

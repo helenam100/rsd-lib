@@ -42,7 +42,7 @@
     "Oem": {
         "Intel_RackScale": {
             "@odata.type": "#Intel.Oem.ServiceRoot",
-            "ApiVersion": "2.2"
+            "ApiVersion": "2.1.0"
         }
     },
     "@odata.context": "/redfish/v1/$metadata#ServiceRoot",

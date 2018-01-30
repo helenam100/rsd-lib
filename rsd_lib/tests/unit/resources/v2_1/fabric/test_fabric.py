@@ -19,9 +19,9 @@ import mock
 from sushy import exceptions
 import testtools
 
-from rsd_lib.resources.fabric import endpoint
-from rsd_lib.resources.fabric import fabric
-from rsd_lib.resources.fabric import zone
+from rsd_lib.resources.v2_1.fabric import endpoint
+from rsd_lib.resources.v2_1.fabric import fabric
+from rsd_lib.resources.v2_1.fabric import zone
 
 
 class FabricTestCase(testtools.TestCase):

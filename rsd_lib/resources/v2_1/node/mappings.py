@@ -15,7 +15,7 @@
 
 from sushy import utils
 
-from rsd_lib.resources.node import constants as node_cons
+from rsd_lib.resources.v2_1.node import constants as node_cons
 
 RESET_NODE_VALUE_MAP = {
     'On': node_cons.RESET_ON,

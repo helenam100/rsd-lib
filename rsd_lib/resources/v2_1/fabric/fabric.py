@@ -18,8 +18,8 @@ import logging
 from sushy import exceptions
 from sushy.resources import base
 
-from rsd_lib.resources.fabric import endpoint
-from rsd_lib.resources.fabric import zone
+from rsd_lib.resources.v2_1.fabric import endpoint
+from rsd_lib.resources.v2_1.fabric import zone
 
 LOG = logging.getLogger(__name__)
 

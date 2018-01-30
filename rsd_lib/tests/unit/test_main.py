@@ -20,8 +20,7 @@ from sushy import connector
 import testtools
 
 from rsd_lib import main
-from rsd_lib.resources.fabric import fabric
-from rsd_lib.resources.node import node
+from rsd_lib.resources import v2_1
 
 
 class RSDLibTestCase(testtools.TestCase):
@@ -38,32 +37,22 @@ class RSDLibTestCase(testtools.TestCase):
 
     def test__parse_attributes(self):
         self.rsd._parse_attributes()
-        self.assertEqual("2.2", self.rsd._rsd_api_version)
+        self.assertEqual("2.1.0", self.rsd._rsd_api_version)
+        self.assertEqual("1.0.2", self.rsd._redfish_version)
 
-    @mock.patch.object(node, 'NodeCollection', autospec=True)
-    def test_get_node_collection(self, mock_node_collection):
-        self.rsd.get_node_collection()
-        mock_node_collection.assert_called_once_with(
-            self.rsd._conn, '/redfish/v1/Nodes',
-            redfish_version=self.rsd.redfish_version)
+    @mock.patch.object(v2_1, 'RSDLibV2_1', autospec=True)
+    def test_factory(self, mock_rsdlibv2_1):
+        self.rsd.factory()
+        mock_rsdlibv2_1.assert_called_once_with(
+            self.rsd._conn,
+            self.rsd._root_prefix,
+            redfish_version=self.rsd._redfish_version)
 
-    @mock.patch.object(node, 'Node', autospec=True)
-    def test_get_node(self, mock_node):
-        self.rsd.get_node('fake-node-id')
-        mock_node.assert_called_once_with(
-            self.rsd._conn, 'fake-node-id',
-            redfish_version=self.rsd.redfish_version)
+    def test_factory_unsupported_version(self):
+        self.rsd._rsd_api_version = "10.0.0"
+        expected_error_message = "The rsd-lib library doesn't support RSD "\
+                                 "API version 10.0.0."
 
-    @mock.patch.object(fabric, 'FabricCollection', autospec=True)
-    def test_get_fabric_collection(self, mock_fabric_collection):
-        self.rsd.get_fabric_collection()
-        mock_fabric_collection.assert_called_once_with(
-            self.rsd._conn, '/redfish/v1/Fabrics',
-            redfish_version=self.rsd.redfish_version)
-
-    @mock.patch.object(fabric, 'Fabric', autospec=True)
-    def test_get_fabric(self, mock_fabric):
-        self.rsd.get_fabric('fake-fabric-id')
-        mock_fabric.assert_called_once_with(
-            self.rsd._conn, 'fake-fabric-id',
-            redfish_version=self.rsd.redfish_version)
+        with self.assertRaisesRegex(NotImplementedError,
+                                    expected_error_message):
+            self.rsd.factory()

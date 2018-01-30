@@ -18,7 +18,7 @@ import logging
 from sushy.resources import base
 from sushy import utils
 
-from rsd_lib.resources.fabric import endpoint
+from rsd_lib.resources.v2_1.fabric import endpoint
 
 LOG = logging.getLogger(__name__)
 

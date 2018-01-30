@@ -18,9 +18,9 @@ import logging
 from sushy import exceptions
 from sushy.resources import base
 
-from rsd_lib.resources.storage_service import logical_drive
-from rsd_lib.resources.storage_service import physical_drive
-from rsd_lib.resources.storage_service import remote_target
+from rsd_lib.resources.v2_1.storage_service import logical_drive
+from rsd_lib.resources.v2_1.storage_service import physical_drive
+from rsd_lib.resources.v2_1.storage_service import remote_target
 
 LOG = logging.getLogger(__name__)
 

@@ -13,111 +13,59 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import sushy
+from distutils import version
+
+from sushy import connector
 from sushy.resources import base
 
-from rsd_lib.resources.chassis import chassis
-from rsd_lib.resources.fabric import fabric
-from rsd_lib.resources.node import node
-from rsd_lib.resources.storage_service import storage_service
+from rsd_lib.resources import v2_1
 
 
-class RSDLib(sushy.Sushy):
+class RSDLib(base.ResourceBase):
 
-    _nodes_path = base.Field(['Nodes', '@odata.id'], required=True)
-    """NodeCollection path"""
-
-    _chassis_path = base.Field(['Chassis', '@odata.id'], required=True)
-    """ChassisCollection path"""
-
-    _storage_service_path = base.Field(['Services',
-                                        '@odata.id'], required=True)
-    """StorageServiceCollection path"""
-
-    _fabrics_path = base.Field(['Fabrics', '@odata.id'], required=True)
+    _redfish_version = base.Field(['RedfishVersion'], required=True)
     """FabricCollection path"""
 
     _rsd_api_version = base.Field(['Oem', 'Intel_RackScale', 'ApiVersion'],
                                   required=True)
+    """RSD API version"""
 
-    def get_node_collection(self):
-        """Get the NodeCollection object
+    def __init__(self, base_url, username=None, password=None,
+                 root_prefix='/redfish/v1/', verify=True):
+        """A class representing a RootService
 
-        :raises: MissingAttributeError, if the collection attribute is
-            not found
-        :returns: a NodeCollection object
+        :param base_url: The base URL to the Redfish controller. It
+            should include scheme and authority portion of the URL. For
+            example: https://mgmt.vendor.com
+        :param username: User account with admin/server-profile access
+            privilege
+        :param password: User account password
+        :param root_prefix: The default URL prefix. This part includes
+            the root service and version. Defaults to /redfish/v1
+        :param verify: Either a boolean value, a path to a CA_BUNDLE
+            file or directory with certificates of trusted CAs. If set to
+            True the driver will verify the host certificates; if False
+            the driver will ignore verifying the SSL certificate; if it's
+            a path the driver will use the specified certificate or one of
+            the certificates in the directory. Defaults to True.
         """
-        return node.NodeCollection(self._conn, self._nodes_path,
-                                   redfish_version=self.redfish_version)
+        self._root_prefix = root_prefix
+        super(RSDLib, self).__init__(
+            connector.Connector(base_url, username, password, verify),
+            path=self._root_prefix)
 
-    def get_node(self, identity):
-        """Given the identity return a Node object
+    def factory(self):
+        """Return different resource module according to RSD API Version
 
-        :param identity: The identity of the Node resource
-        :returns: The Node object
+        :returns: a resource module
         """
-        return node.Node(self._conn, identity,
-                         redfish_version=self.redfish_version)
-
-    def get_storage_service_collection(self):
-        """Get the StorageServiceCollection object
-
-        :raises: MissingAttributeError, if the collection attribute is
-            not found
-        :returns: a StorageServiceCollection object
-        """
-        return storage_service.StorageServiceCollection(
-            self._conn, self._storage_service_path,
-            redfish_version=self.redfish_version)
-
-    def get_storage_service(self, identity):
-        """Given the identity return a StorageService object
-
-        :param identity: The identity of the StorageService resource
-        :returns: The StorageService object
-        """
-        return storage_service.StorageService(
-            self._conn, identity,
-            redfish_version=self.redfish_version)
-
-    def get_chassis_collection(self):
-        """Get the ChassisCollection object
-
-        :raises: MissingAttributeError, if the collection attribute is
-            not found
-        :returns: a ChassisCollection object
-        """
-        return chassis.ChassisCollection(self._conn,
-                                         self._chassis_path,
-                                         redfish_version=self.redfish_version)
-
-    def get_chassis(self, identity):
-        """Given the identity return a Chassis object
-
-        :param identity: The identity of the Chassis resource
-        :returns: The Chassis object
-        """
-        return chassis.Chassis(self._conn,
-                               identity,
-                               redfish_version=self.redfish_version)
-
-    def get_fabric_collection(self):
-        """Get the FabricCollection object
-
-        :raises: MissingAttributeError, if the collection attribute is
-            not found
-        :returns: a FabricCollection object
-        """
-        return fabric.FabricCollection(self._conn,
-                                       self._fabrics_path,
-                                       redfish_version=self.redfish_version)
-
-    def get_fabric(self, identity):
-        """Given the identity return a Fabric object
-
-        :param identity: The identity of the Fabric resource
-        :returns: The Fabric object
-        """
-        return fabric.Fabric(self._conn,
-                             identity,
-                             redfish_version=self.redfish_version)
+        rsd_version = version.StrictVersion(self._rsd_api_version)
+        if rsd_version <= version.StrictVersion("2.1.0"):
+            # Use the interface of RSD API 2.1.0 to interact with RSD 2.1.0 and
+            # all previous version.
+            return v2_1.RSDLibV2_1(self._conn, self._root_prefix,
+                                   redfish_version=self._redfish_version)
+        else:
+            raise NotImplementedError(
+                "The rsd-lib library doesn't support RSD API "
+                "version {0}.".format(self._rsd_api_version))
