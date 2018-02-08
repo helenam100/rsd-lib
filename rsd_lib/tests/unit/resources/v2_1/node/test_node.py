@@ -179,6 +179,19 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Node1/Actions/ComposedNode.Assemble')
 
+    def test_get_allowed_attach_endpoints(self):
+        expected = self.node_inst.get_allowed_attach_endpoints()
+        result = ("/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.1",
+                  "/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.2")
+        self.assertEqual(expected, result)
+
+        (self.node_inst._json['Actions']['#ComposedNode.AttachEndpoint']
+         ['Resource@Redfish.AllowableValues']) = []
+        self.node_inst._parse_attributes()
+        expected = self.node_inst.get_allowed_attach_endpoints()
+        result = ()
+        self.assertEqual(expected, result)
+
     def test_attach_endpoint(self):
         self.node_inst.attach_endpoint(
             endpoint='/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.1',
@@ -199,6 +212,18 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Node1/Actions/ComposedNode.AttachEndpoint',
             data={'CapacityGiB': 100})
+
+    def test_get_allowed_detach_endpoints(self):
+        expected = self.node_inst.get_allowed_detach_endpoints()
+        result = ("/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.3",)
+        self.assertEqual(expected, result)
+
+        (self.node_inst._json['Actions']['#ComposedNode.DetachEndpoint']
+         ['Resource@Redfish.AllowableValues']) = []
+        self.node_inst._parse_attributes()
+        expected = self.node_inst.get_allowed_detach_endpoints()
+        result = ()
+        self.assertEqual(expected, result)
 
     def test_detach_endpoint(self):
         self.node_inst.detach_endpoint(

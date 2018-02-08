@@ -36,7 +36,7 @@ class AssembleActionField(base.CompositeField):
 
 class AttachEndpointActionField(base.CompositeField):
     allowed_values = base.Field('Resource@Redfish.AllowableValues',
-                                default=[],
+                                default=(),
                                 adapter=utils.get_members_identities)
 
     target_uri = base.Field('target', required=True)
@@ -44,7 +44,7 @@ class AttachEndpointActionField(base.CompositeField):
 
 class DetachEndpointActionField(base.CompositeField):
     allowed_values = base.Field('Resource@Redfish.AllowableValues',
-                                default=[],
+                                default=(),
                                 adapter=utils.get_members_identities)
 
     target_uri = base.Field('target', required=True)
@@ -302,6 +302,14 @@ class Node(base.ResourceBase):
                 resource=self._path)
         return attach_endpoint_action
 
+    def get_allowed_attach_endpoints(self):
+        """Get the allowed endpoints for attach action.
+
+        :returns: A set with the allowed attach endpoints.
+        """
+        attach_action = self._get_attach_endpoint_action_element()
+        return attach_action.allowed_values
+
     def attach_endpoint(self, endpoint=None, capacity=None):
         """Attach endpoint from available pool to composed node
 
@@ -334,6 +342,14 @@ class Node(base.ResourceBase):
                 action='#ComposedNode.DetachEndpoint',
                 resource=self._path)
         return detach_endpoint_action
+
+    def get_allowed_detach_endpoints(self):
+        """Get the allowed endpoints for detach action.
+
+        :returns: A set with the allowed detach endpoints.
+        """
+        detach_action = self._get_detach_endpoint_action_element()
+        return detach_action.allowed_values
 
     def detach_endpoint(self, endpoint):
         """Detach already attached endpoint from composed node
