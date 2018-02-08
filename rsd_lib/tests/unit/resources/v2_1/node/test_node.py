@@ -54,11 +54,18 @@ class NodeTestCase(testtools.TestCase):
         self.assertEqual('OK', self.node_inst.status.health)
         self.assertEqual('OK', self.node_inst.status.health_rollup)
         self.assertEqual(32, self.node_inst.memory_summary.size_gib)
-        self.assertEqual('OK', self.node_inst.memory_summary.health)
+        self.assertEqual('Enabled', self.node_inst.memory_summary.status.state)
+        self.assertEqual('OK', self.node_inst.memory_summary.status.health)
+        self.assertEqual(
+            'OK', self.node_inst.memory_summary.status.health_rollup)
         self.assertEqual(2, self.node_inst.processor_summary.count)
         self.assertEqual('Multi-Core Intel(R) Xeon(R) processor 7xxx Series',
                          self.node_inst.processor_summary.model)
-        self.assertEqual('OK', self.node_inst.processor_summary.health)
+        self.assertEqual(
+            'Enabled', self.node_inst.processor_summary.status.state)
+        self.assertEqual('OK', self.node_inst.processor_summary.status.health)
+        self.assertEqual(
+            'OK', self.node_inst.processor_summary.status.health_rollup)
 
     def test__parse_attributes_missing_actions(self):
         self.node_inst.json.pop('Actions')
@@ -275,7 +282,32 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst._parse_attributes()
         # | THEN |
         self.assertEqual(32, self.node_inst.memory_summary.size_gib)
-        self.assertEqual(None, self.node_inst.memory_summary.health)
+        self.assertEqual(None, self.node_inst.memory_summary.status.health)
+        self.assertEqual('Enabled', self.node_inst.memory_summary.status.state)
+        self.assertEqual(
+            'OK', self.node_inst.memory_summary.status.health_rollup)
+
+        # | GIVEN |
+        self.node_inst._json['Memory']['Status'].pop('State')
+        # | WHEN |
+        self.node_inst._parse_attributes()
+        # | THEN |
+        self.assertEqual(32, self.node_inst.memory_summary.size_gib)
+        self.assertEqual(None, self.node_inst.memory_summary.status.health)
+        self.assertEqual(None, self.node_inst.memory_summary.status.state)
+        self.assertEqual(
+            'OK', self.node_inst.memory_summary.status.health_rollup)
+
+        # | GIVEN |
+        self.node_inst._json['Memory']['Status'].pop('HealthRollup')
+        # | WHEN |
+        self.node_inst._parse_attributes()
+        # | THEN |
+        self.assertEqual(32, self.node_inst.memory_summary.size_gib)
+        self.assertEqual(None, self.node_inst.memory_summary.status.health)
+        self.assertEqual(None, self.node_inst.memory_summary.status.state)
+        self.assertEqual(
+            None, self.node_inst.memory_summary.status.health_rollup)
 
         # | GIVEN |
         self.node_inst._json['Memory'].pop('Status')
@@ -283,7 +315,7 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst._parse_attributes()
         # | THEN |
         self.assertEqual(32, self.node_inst.memory_summary.size_gib)
-        self.assertEqual(None, self.node_inst.memory_summary.health)
+        self.assertEqual(None, self.node_inst.memory_summary.status)
 
         # | GIVEN |
         self.node_inst._json['Memory'].pop('TotalSystemMemoryGiB')
@@ -291,7 +323,7 @@ class NodeTestCase(testtools.TestCase):
         self.node_inst._parse_attributes()
         # | THEN |
         self.assertEqual(None, self.node_inst.memory_summary.size_gib)
-        self.assertEqual(None, self.node_inst.memory_summary.health)
+        self.assertEqual(None, self.node_inst.memory_summary.status)
 
         # | GIVEN |
         self.node_inst._json.pop('Memory')

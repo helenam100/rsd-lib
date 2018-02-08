@@ -28,6 +28,7 @@ LOG = logging.getLogger(__name__)
 class StatusField(base.CompositeField):
     state = base.Field('State')
     health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
 
 
 class StorageService(base.ResourceBase):

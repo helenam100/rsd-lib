@@ -47,6 +47,9 @@ class TestChassis(base.TestCase):
         self.assertEqual('e1c2d764-5c72', self.chassis_inst.sku)
         self.assertEqual('e1c2d764-5c72-36d6-9945-a78255edab51',
                          self.chassis_inst.oem['Intel:RackScale']['UUID'])
+        self.assertEqual('Enabled', self.chassis_inst.status.state)
+        self.assertEqual('OK', self.chassis_inst.status.health)
+        self.assertEqual('OK', self.chassis_inst.status.health_rollup)
 
 
 class TestChassisCollection(base.TestCase):

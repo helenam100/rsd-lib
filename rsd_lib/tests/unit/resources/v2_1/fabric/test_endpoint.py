@@ -60,6 +60,9 @@ class EndpointTestCase(testtools.TestCase):
         self.assertEqual(
             '00000000-0000-0000-0000-000000000000',
             self.endpoint_inst.connected_entities[0].identifiers[0].name)
+        self.assertEqual('Enabled', self.endpoint_inst.status.state)
+        self.assertEqual('OK', self.endpoint_inst.status.health)
+        self.assertEqual('OK', self.endpoint_inst.status.health_rollup)
 
 
 class EndpointCollectionTestCase(testtools.TestCase):

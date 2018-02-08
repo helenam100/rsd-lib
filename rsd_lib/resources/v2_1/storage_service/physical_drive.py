@@ -20,6 +20,12 @@ from sushy.resources import base
 LOG = logging.getLogger(__name__)
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
+
+
 class PhysicalDrive(base.ResourceBase):
 
     identity = base.Field('Id', required=True)
@@ -45,6 +51,9 @@ class PhysicalDrive(base.ResourceBase):
 
     serial_number = base.Field('SerialNumber')
     """The serial number for the physical drive"""
+
+    status = StatusField('Status')
+    """The physical drive status"""
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a PhysicalDrive

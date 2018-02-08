@@ -8,6 +8,7 @@
     "Status": {
         "State": "Enabled",
         "Health": "OK",
+        "HealthRollup": "OK"
     },
     "Type": "LVM",
     "Mode": "RAID0",

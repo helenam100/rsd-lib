@@ -87,11 +87,8 @@ class BootField(base.CompositeField):
 
 
 class MemorySummaryField(base.CompositeField):
-    health = base.Field(['Status', 'Health'])
-    """The overall health state of memory.
-
-    This signifies health state of memory along with its dependent resources.
-    """
+    status = StatusField('Status')
+    """The memory status"""
 
     size_gib = base.Field('TotalSystemMemoryGiB', adapter=int)
     """The size of memory of the node in GiB.
@@ -102,8 +99,8 @@ class MemorySummaryField(base.CompositeField):
 
 
 class ProcessorSummaryField(base.CompositeField):
-    health = base.Field(['Status', 'Health'])
-    """The overall health state of the node processors."""
+    status = StatusField('Status')
+    """The processor status"""
 
     count = base.Field('Count', adapter=int)
     """The number of CPUs in the node."""

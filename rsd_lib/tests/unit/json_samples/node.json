@@ -17,14 +17,16 @@
         "Model": "Multi-Core Intel(R) Xeon(R) processor 7xxx Series",
         "Status": {
             "State": "Enabled",
-            "Health": "OK"
+            "Health": "OK",
+            "HealthRollup" : "OK"
         }
     },
     "Memory": {
         "TotalSystemMemoryGiB": 32,
         "Status": {
             "State": "Enabled",
-            "Health": "OK"
+            "Health": "OK",
+            "HealthRollup" : "OK"
         }
     },
     "ComposedNodeState": "Allocated",

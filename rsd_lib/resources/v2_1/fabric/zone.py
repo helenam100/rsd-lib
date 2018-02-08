@@ -28,6 +28,11 @@ class ZoneLinksField(base.CompositeField):
                                      adapter=utils.get_members_identities)
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+
+
 class Zone(base.ResourceBase):
 
     description = base.Field('Description')
@@ -41,6 +46,9 @@ class Zone(base.ResourceBase):
 
     links = ZoneLinksField('Links')
     """The zone links"""
+
+    status = StatusField('Status')
+    """The zone status"""
 
     _endpoints = None  # ref to contained endpoints
 

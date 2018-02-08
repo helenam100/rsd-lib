@@ -41,6 +41,12 @@ class ConnectedEntitiesField(rsd_base.FieldList):
     identifiers = IdentifiersField('Identifiers')
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
+
+
 class Endpoint(base.ResourceBase):
 
     connected_entities = ConnectedEntitiesField('ConnectedEntities')
@@ -66,6 +72,9 @@ class Endpoint(base.ResourceBase):
 
     redundancy = base.Field('Redundancy')
     """The endpoint redundancy"""
+
+    status = StatusField('Status')
+    """The endpoint status"""
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing an Endpoint

@@ -45,6 +45,8 @@ class ZoneTestCase(testtools.TestCase):
                           'Endpoints/HostRootComplex1',
                           '/redfish/v1/Fabrics/PCIe/Endpoints/NVMeDrivePF2'),
                          self.zone_inst.links.endpoint_identities)
+        self.assertEqual('Enabled', self.zone_inst.status.state)
+        self.assertEqual('OK', self.zone_inst.status.health)
 
     def test_get_endpoints(self):
         self.conn.get.return_value.json.reset_mock()

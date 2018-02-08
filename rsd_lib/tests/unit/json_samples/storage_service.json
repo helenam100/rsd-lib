@@ -7,7 +7,8 @@
     "Description": "Storage Service",
     "Status": {
         "State": "Enabled",
-        "Health": "OK"
+        "Health": "OK",
+        "HealthRollup": "OK"
     },
     "RemoteTargets": {
         "@odata.id": "/redfish/v1/Services/RSS1/Targets"
@@ -27,4 +28,4 @@
         ],
         "Oem": {}
     }
-} 
+}

@@ -16,6 +16,12 @@
 from sushy.resources import base
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
+
+
 class Chassis(base.ResourceBase):
     identity = base.Field('Id', required=True)
     """The chassis identity string"""
@@ -40,6 +46,9 @@ class Chassis(base.ResourceBase):
 
     sku = base.Field('SKU')
     """The chassis stock-keeping unit"""
+
+    status = StatusField('Status')
+    """The chassis status"""
 
     chassis_type = base.Field('ChassisType')
     """The chassis type"""

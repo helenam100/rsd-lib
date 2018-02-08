@@ -45,6 +45,12 @@ class InitiatorsField(rsd_base.FieldList):
     iscsi = ISCSIInitiatorField('iSCSI')
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
+
+
 class RemoteTarget(base.ResourceBase):
 
     identity = base.Field('Id', required=True)
@@ -56,6 +62,9 @@ class RemoteTarget(base.ResourceBase):
     addresses = AddressesField('Addresses')
 
     initiators = InitiatorsField('Initiator')
+
+    status = StatusField('Status')
+    """The remote target status"""
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a RemoteTarget

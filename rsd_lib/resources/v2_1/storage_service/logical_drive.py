@@ -20,6 +20,12 @@ from sushy.resources import base
 LOG = logging.getLogger(__name__)
 
 
+class StatusField(base.CompositeField):
+    state = base.Field('State')
+    health = base.Field('Health')
+    health_rollup = base.Field('HealthRollup')
+
+
 class LogicalDrive(base.ResourceBase):
 
     identity = base.Field('Id', required=True)
@@ -45,6 +51,9 @@ class LogicalDrive(base.ResourceBase):
 
     snapshot = base.Field('Snapshot')
     """Type of drive replication. Yes - copy on write, No - disc clone"""
+
+    status = StatusField('Status')
+    """The logical drive status"""
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a LogicalDrive
