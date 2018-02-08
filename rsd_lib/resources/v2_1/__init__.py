@@ -24,6 +24,9 @@ from rsd_lib.resources.v2_1.storage_service import storage_service
 
 class RSDLibV2_1(base.ResourceBase):
 
+    _systems_path = base.Field(['Systems', '@odata.id'], required=True)
+    """SystemCollection path"""
+
     _nodes_path = base.Field(['Nodes', '@odata.id'], required=True)
     """NodeCollection path"""
 
