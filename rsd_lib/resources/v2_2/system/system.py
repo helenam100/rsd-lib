@@ -66,3 +66,10 @@ class System(system.System):
         super(System, self).refresh()
         self._metrics = None
         self._processors = None
+
+
+class SystemCollection(system.SystemCollection):
+
+    @property
+    def _resource_type(self):
+        return System

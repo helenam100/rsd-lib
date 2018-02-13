@@ -17,12 +17,11 @@ import json
 import mock
 import testtools
 
-from sushy.resources.system import system
-
-from rsd_lib.resources.v2_1.chassis import chassis
-from rsd_lib.resources.v2_1.fabric import fabric
-from rsd_lib.resources.v2_1.node import node
-from rsd_lib.resources.v2_1.storage_service import storage_service
+from rsd_lib.resources.v2_1.chassis import chassis as v2_1_chassis
+from rsd_lib.resources.v2_1.fabric import fabric as v2_1_fabric
+from rsd_lib.resources.v2_1.node import node as v2_1_node
+from rsd_lib.resources.v2_1.storage_service import storage_service \
+    as v2_1_storage_service
 from rsd_lib.resources import v2_2
 from rsd_lib.resources.v2_2.system import system as v2_2_system
 
@@ -49,7 +48,7 @@ class RSDLibV2_2TestCase(testtools.TestCase):
         self.assertEqual("/redfish/v1/TelemetryService",
                          self.rsd._telemetry_service_path)
 
-    @mock.patch.object(system, 'SystemCollection', autospec=True)
+    @mock.patch.object(v2_2_system, 'SystemCollection', autospec=True)
     def test_get_system_collection(self, mock_system_collection):
         self.rsd.get_system_collection()
         mock_system_collection.assert_called_once_with(
@@ -63,49 +62,49 @@ class RSDLibV2_2TestCase(testtools.TestCase):
             self.rsd._conn, 'fake-system-id',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(node, 'NodeCollection', autospec=True)
+    @mock.patch.object(v2_1_node, 'NodeCollection', autospec=True)
     def test_get_node_collection(self, mock_node_collection):
         self.rsd.get_node_collection()
         mock_node_collection.assert_called_once_with(
             self.rsd._conn, '/redfish/v1/Nodes',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(node, 'Node', autospec=True)
+    @mock.patch.object(v2_1_node, 'Node', autospec=True)
     def test_get_node(self, mock_node):
         self.rsd.get_node('fake-node-id')
         mock_node.assert_called_once_with(
             self.rsd._conn, 'fake-node-id',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(fabric, 'FabricCollection', autospec=True)
+    @mock.patch.object(v2_1_fabric, 'FabricCollection', autospec=True)
     def test_get_fabric_collection(self, mock_fabric_collection):
         self.rsd.get_fabric_collection()
         mock_fabric_collection.assert_called_once_with(
             self.rsd._conn, '/redfish/v1/Fabrics',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(fabric, 'Fabric', autospec=True)
+    @mock.patch.object(v2_1_fabric, 'Fabric', autospec=True)
     def test_get_fabric(self, mock_fabric):
         self.rsd.get_fabric('fake-fabric-id')
         mock_fabric.assert_called_once_with(
             self.rsd._conn, 'fake-fabric-id',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(chassis, 'ChassisCollection', autospec=True)
+    @mock.patch.object(v2_1_chassis, 'ChassisCollection', autospec=True)
     def test_get_chassis_collection(self, mock_chassis_collection):
         self.rsd.get_chassis_collection()
         mock_chassis_collection.assert_called_once_with(
             self.rsd._conn, '/redfish/v1/Chassis',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(chassis, 'Chassis', autospec=True)
+    @mock.patch.object(v2_1_chassis, 'Chassis', autospec=True)
     def test_get_chassis(self, mock_chassis):
         self.rsd.get_chassis('fake-chassis-id')
         mock_chassis.assert_called_once_with(
             self.rsd._conn, 'fake-chassis-id',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(storage_service, 'StorageServiceCollection',
+    @mock.patch.object(v2_1_storage_service, 'StorageServiceCollection',
                        autospec=True)
     def test_get_storage_service_collection(self,
                                             mock_storage_service_collection):
@@ -114,7 +113,7 @@ class RSDLibV2_2TestCase(testtools.TestCase):
             self.rsd._conn, '/redfish/v1/Services',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(storage_service, 'StorageService', autospec=True)
+    @mock.patch.object(v2_1_storage_service, 'StorageService', autospec=True)
     def test_get_storage_service(self, mock_storage_service):
         self.rsd.get_storage_service('fake-storage-service-id')
         mock_storage_service.assert_called_once_with(

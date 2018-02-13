@@ -41,3 +41,13 @@ class RSDLibV2_2(v2_1.RSDLibV2_1):
         """
         return system.System(self._conn, identity,
                              redfish_version=self.redfish_version)
+
+    def get_system_collection(self):
+        """Get the SystemCollection object
+
+        :raises: MissingAttributeError, if the collection attribute is
+            not found
+        :returns: a SystemCollection object
+        """
+        return system.SystemCollection(self._conn, self._systems_path,
+                                       redfish_version=self.redfish_version)
