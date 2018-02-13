@@ -31,7 +31,7 @@ class NodeTestCase(testtools.TestCase):
     def setUp(self):
         super(NodeTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/node.json', 'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_1/node.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
         self.node_inst = node.Node(
@@ -362,7 +362,7 @@ class NodeTestCase(testtools.TestCase):
         self.assertIsNone(self.node_inst._system)
         # | GIVEN |
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/system.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/system.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
@@ -382,7 +382,7 @@ class NodeTestCase(testtools.TestCase):
 
     def test_system_on_refresh(self):
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/system.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/system.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -390,7 +390,7 @@ class NodeTestCase(testtools.TestCase):
                               system.System)
 
         # On refreshing the system instance...
-        with open('rsd_lib/tests/unit/json_samples/node.json', 'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_1/node.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.node_inst.refresh()
 
@@ -398,7 +398,7 @@ class NodeTestCase(testtools.TestCase):
         self.assertIsNone(self.node_inst._system)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/system.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/system.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -415,7 +415,7 @@ class NodeCollectionTestCase(testtools.TestCase):
     def setUp(self):
         super(NodeCollectionTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/node_collection.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/node_collection.json',
                   'r') as f:
             self.conn.get.return_value = request_fakes.fake_request_get(
                 json.loads(f.read()))

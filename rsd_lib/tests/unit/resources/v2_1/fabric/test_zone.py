@@ -26,7 +26,7 @@ class ZoneTestCase(testtools.TestCase):
     def setUp(self):
         super(ZoneTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/zone.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/zone.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
@@ -50,7 +50,8 @@ class ZoneTestCase(testtools.TestCase):
 
     def test_get_endpoints(self):
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/endpoint.json', 'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
+                  'endpoint.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         endpoints = self.zone_inst.get_endpoints()
         self.assertEqual(endpoints[0].identity, 'NVMeDrivePF1')
@@ -61,7 +62,7 @@ class ZoneCollectionTestCase(testtools.TestCase):
     def setUp(self):
         super(ZoneCollectionTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'zone_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.zone_col = zone.ZoneCollection(

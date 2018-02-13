@@ -30,7 +30,7 @@ class StorageServiceTestCase(testtools.TestCase):
     def setUp(self):
         super(StorageServiceTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/storage_service.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/storage_service.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
@@ -63,7 +63,7 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertIsNone(self.storage_service_inst._logical_drives)
         # | GIVEN |
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'logical_drive_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
@@ -83,7 +83,7 @@ class StorageServiceTestCase(testtools.TestCase):
 
     def test_logical_drives_on_refresh(self):
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'logical_drive_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -91,7 +91,7 @@ class StorageServiceTestCase(testtools.TestCase):
                               logical_drive.LogicalDriveCollection)
 
         # On refreshing the storage service instance...
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'storage_service.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.storage_service_inst.refresh()
@@ -100,7 +100,7 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertIsNone(self.storage_service_inst._logical_drives)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'logical_drive_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -118,7 +118,7 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertIsNone(self.storage_service_inst._physical_drives)
         # | GIVEN |
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'physical_drive_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
@@ -138,7 +138,7 @@ class StorageServiceTestCase(testtools.TestCase):
 
     def test_physical_drives_on_refresh(self):
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'physical_drive_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -146,7 +146,7 @@ class StorageServiceTestCase(testtools.TestCase):
                               physical_drive.PhysicalDriveCollection)
 
         # On refreshing the storage service instance...
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'storage_service.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.storage_service_inst.refresh()
@@ -155,7 +155,7 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertIsNone(self.storage_service_inst._physical_drives)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'physical_drive_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -173,7 +173,7 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertIsNone(self.storage_service_inst._remote_targets)
         # | GIVEN |
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'remote_target_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
@@ -193,7 +193,7 @@ class StorageServiceTestCase(testtools.TestCase):
 
     def test_remote_targets_on_refresh(self):
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'remote_target_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -201,7 +201,7 @@ class StorageServiceTestCase(testtools.TestCase):
                               remote_target.RemoteTargetCollection)
 
         # On refreshing the storage service instance...
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'storage_service.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.storage_service_inst.refresh()
@@ -210,7 +210,7 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertIsNone(self.storage_service_inst._remote_targets)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'remote_target_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -223,7 +223,7 @@ class StorageServiceCollectionTestCase(testtools.TestCase):
     def setUp(self):
         super(StorageServiceCollectionTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'storage_service_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.storage_service_col = storage_service.StorageServiceCollection(

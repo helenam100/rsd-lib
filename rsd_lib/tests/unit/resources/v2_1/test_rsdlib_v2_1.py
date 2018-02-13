@@ -28,7 +28,7 @@ class RSDLibV2_1TestCase(testtools.TestCase):
     def setUp(self):
         super(RSDLibV2_1TestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/root.json', 'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_1/root.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.rsd = v2_1.RSDLibV2_1(self.conn)
 
@@ -36,6 +36,12 @@ class RSDLibV2_1TestCase(testtools.TestCase):
         self.rsd._parse_attributes()
         self.assertEqual("2.1.0", self.rsd._rsd_api_version)
         self.assertEqual("1.0.2", self.rsd._redfish_version)
+        self.assertEqual("/redfish/v1/Systems", self.rsd._systems_path)
+        self.assertEqual("/redfish/v1/Nodes", self.rsd._nodes_path)
+        self.assertEqual("/redfish/v1/Chassis", self.rsd._chassis_path)
+        self.assertEqual("/redfish/v1/Services",
+                         self.rsd._storage_service_path)
+        self.assertEqual("/redfish/v1/Fabrics", self.rsd._fabrics_path)
 
     @mock.patch.object(node, 'NodeCollection', autospec=True)
     def test_get_node_collection(self, mock_node_collection):

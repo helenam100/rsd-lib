@@ -25,7 +25,7 @@ class TestChassis(base.TestCase):
         super(TestChassis, self).setUp()
         self.conn = mock.Mock()
 
-        with open('rsd_lib/tests/unit/json_samples/chassis.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/chassis.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
@@ -58,8 +58,8 @@ class TestChassisCollection(base.TestCase):
         super(TestChassisCollection, self).setUp()
         self.conn = mock.Mock()
 
-        with open('rsd_lib/tests/unit/json_samples/chassis_collection.json',
-                  'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
+                  'chassis_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
         self.chassis_col = chassis.ChassisCollection(self.conn,

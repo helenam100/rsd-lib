@@ -30,7 +30,7 @@ class RSDLibTestCase(testtools.TestCase):
         super(RSDLibTestCase, self).setUp()
         self.conn = mock.Mock()
         mock_connector.return_value = self.conn
-        with open('rsd_lib/tests/unit/json_samples/root.json', 'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_1/root.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.rsd = main.RSDLib('http://foo.bar:8442', username='foo',
                                password='bar', verify=True)

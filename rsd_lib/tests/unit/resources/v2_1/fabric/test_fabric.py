@@ -29,7 +29,7 @@ class FabricTestCase(testtools.TestCase):
     def setUp(self):
         super(FabricTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/fabric.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/fabric.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
@@ -61,7 +61,7 @@ class FabricTestCase(testtools.TestCase):
         self.assertIsNone(self.fabric_inst._endpoints)
         # | GIVEN |
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'endpoint_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
@@ -81,7 +81,7 @@ class FabricTestCase(testtools.TestCase):
 
     def test_endpoints_on_refresh(self):
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'endpoint_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -89,7 +89,7 @@ class FabricTestCase(testtools.TestCase):
                               endpoint.EndpointCollection)
 
         # On refreshing the fabric instance...
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'fabric.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.fabric_inst.refresh()
@@ -98,7 +98,7 @@ class FabricTestCase(testtools.TestCase):
         self.assertIsNone(self.fabric_inst._endpoints)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'endpoint_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -116,7 +116,7 @@ class FabricTestCase(testtools.TestCase):
         self.assertIsNone(self.fabric_inst._zones)
         # | GIVEN |
         self.conn.get.return_value.json.reset_mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'zone_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN |
@@ -136,7 +136,7 @@ class FabricTestCase(testtools.TestCase):
 
     def test_zones_on_refresh(self):
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'zone_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -144,7 +144,7 @@ class FabricTestCase(testtools.TestCase):
                               zone.ZoneCollection)
 
         # On refreshing the fabric instance...
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'fabric.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.fabric_inst.refresh()
@@ -153,7 +153,7 @@ class FabricTestCase(testtools.TestCase):
         self.assertIsNone(self.fabric_inst._zones)
 
         # | GIVEN |
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'zone_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         # | WHEN & THEN |
@@ -166,7 +166,7 @@ class FabricCollectionTestCase(testtools.TestCase):
     def setUp(self):
         super(FabricCollectionTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'fabric_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.fabric_col = fabric.FabricCollection(

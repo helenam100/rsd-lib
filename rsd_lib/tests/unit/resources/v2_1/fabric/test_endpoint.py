@@ -26,7 +26,7 @@ class EndpointTestCase(testtools.TestCase):
     def setUp(self):
         super(EndpointTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/endpoint.json',
+        with open('rsd_lib/tests/unit/json_samples/v2_1/endpoint.json',
                   'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
 
@@ -70,7 +70,7 @@ class EndpointCollectionTestCase(testtools.TestCase):
     def setUp(self):
         super(EndpointCollectionTestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/'
+        with open('rsd_lib/tests/unit/json_samples/v2_1/'
                   'endpoint_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.endpoint_col = endpoint.EndpointCollection(
