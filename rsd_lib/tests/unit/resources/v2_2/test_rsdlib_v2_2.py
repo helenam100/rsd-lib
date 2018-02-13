@@ -46,6 +46,8 @@ class RSDLibV2_2TestCase(testtools.TestCase):
         self.assertEqual("/redfish/v1/Services",
                          self.rsd._storage_service_path)
         self.assertEqual("/redfish/v1/Fabrics", self.rsd._fabrics_path)
+        self.assertEqual("/redfish/v1/TelemetryService",
+                         self.rsd._telemetry_service_path)
 
     @mock.patch.object(system, 'SystemCollection', autospec=True)
     def test_get_system_collection(self, mock_system_collection):

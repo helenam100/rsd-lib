@@ -29,6 +29,10 @@ class RSDLibV2_2(v2_1.RSDLibV2_1):
                                         '@odata.id'], required=True)
     """StorageServiceCollection path"""
 
+    _telemetry_service_path = base.Field(['TelemetryService', '@odata.id'],
+                                         required=True)
+    """Telemetry Service path"""
+
     def get_system(self, identity):
         """Given the identity return a System object
 
