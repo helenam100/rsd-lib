@@ -20,6 +20,7 @@ import testtools
 from sushy import exceptions
 
 from rsd_lib.resources.v2_2.system import metrics
+from rsd_lib.resources.v2_2.system import processor
 from rsd_lib.resources.v2_2.system import system
 
 
@@ -93,3 +94,51 @@ class SystemTestCase(testtools.TestCase):
         # | WHEN & THEN |
         self.assertIsInstance(self.system_inst.metrics,
                               metrics.Metrics)
+
+    def test_processors(self):
+        # check for the underneath variable value
+        self.assertIsNone(self.system_inst._processors)
+        # | GIVEN |
+        self.conn.get.return_value.json.reset_mock()
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'processor_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN |
+        actual_processors = self.system_inst.processors
+        # | THEN |
+        self.assertIsInstance(actual_processors,
+                              processor.ProcessorCollection)
+        self.conn.get.return_value.json.assert_called_once_with()
+
+        # reset mock
+        self.conn.get.return_value.json.reset_mock()
+        # | WHEN & THEN |
+        # tests for same object on invoking subsequently
+        self.assertIs(actual_processors,
+                      self.system_inst.processors)
+        self.conn.get.return_value.json.assert_not_called()
+
+    def test_processors_on_refresh(self):
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'processor_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.system_inst.processors,
+                              processor.ProcessorCollection)
+
+        # On refreshing the system instance...
+        with open('rsd_lib/tests/unit/json_samples/v2_2/system.json',
+                  'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.system_inst.refresh()
+        # | WHEN & THEN |
+        self.assertIsNone(self.system_inst._processors)
+
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'processor_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.system_inst.processors,
+                              processor.ProcessorCollection)

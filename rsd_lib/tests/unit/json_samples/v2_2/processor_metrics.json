@@ -1,0 +1,13 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ProcessorMetrics.ProcessorMetrics",
+    "@odata.id": "/redfish/v1/Systems/System1/Processors/CPU1/Metrics",
+    "@odata.type": "#ProcessorMetrics.v1_0_0.ProcessorMetrics",
+    "Name": "ProcessorMetrics for CPU1",
+    "Description": "description-as-string",
+    "Id": "Metrics for CPU1",
+    "AverageFrequencyMHz": 3014,
+    "ThrottlingCelsius": 19,
+    "TemperatureCelsius": 73,
+    "ConsumedPowerWatt": 153,
+    "Health": ["FRB1 BIST Failure", "Processor Throttled"]
+}
