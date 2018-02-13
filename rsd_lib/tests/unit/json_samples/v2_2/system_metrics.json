@@ -1,0 +1,15 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ComputerSystemMetricsComputerSystemMetrics",
+    "@odata.id": "/redfish/v1/Systems/System1/Metrics",
+    "@odata.type": "#ComputerSystemMetrics.v1_0_0.ComputerSystemMetrics",
+    "Name": "Computer System Metrics for System1",
+    "Description": "description-as-string",
+    "Id": "Metrics for System1",
+    "ProcessorBandwidthPercent": 17,
+    "MemoryBandwidthPercent": 23,
+    "MemoryThrottledCyclesPercent": 13,
+    "ProcessorPowerWatt": 120,
+    "MemoryPowerWatt": 48,
+    "IOBandwidthGBps": 4,
+    "Health": ["OK"]
+}

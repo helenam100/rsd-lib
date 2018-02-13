@@ -19,26 +19,27 @@ import testtools
 
 from sushy.resources.system import system
 
-from rsd_lib.resources import v2_1
 from rsd_lib.resources.v2_1.chassis import chassis
 from rsd_lib.resources.v2_1.fabric import fabric
 from rsd_lib.resources.v2_1.node import node
 from rsd_lib.resources.v2_1.storage_service import storage_service
+from rsd_lib.resources import v2_2
+from rsd_lib.resources.v2_2.system import system as v2_2_system
 
 
-class RSDLibV2_1TestCase(testtools.TestCase):
+class RSDLibV2_2TestCase(testtools.TestCase):
 
     def setUp(self):
-        super(RSDLibV2_1TestCase, self).setUp()
+        super(RSDLibV2_2TestCase, self).setUp()
         self.conn = mock.Mock()
-        with open('rsd_lib/tests/unit/json_samples/v2_1/root.json', 'r') as f:
+        with open('rsd_lib/tests/unit/json_samples/v2_2/root.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
-        self.rsd = v2_1.RSDLibV2_1(self.conn)
+        self.rsd = v2_2.RSDLibV2_2(self.conn)
 
     def test__parse_attributes(self):
         self.rsd._parse_attributes()
-        self.assertEqual("2.1.0", self.rsd._rsd_api_version)
-        self.assertEqual("1.0.2", self.rsd._redfish_version)
+        self.assertEqual("2.2.0", self.rsd._rsd_api_version)
+        self.assertEqual("1.1.0", self.rsd._redfish_version)
         self.assertEqual("/redfish/v1/Systems", self.rsd._systems_path)
         self.assertEqual("/redfish/v1/Nodes", self.rsd._nodes_path)
         self.assertEqual("/redfish/v1/Chassis", self.rsd._chassis_path)
@@ -53,7 +54,7 @@ class RSDLibV2_1TestCase(testtools.TestCase):
             self.rsd._conn, '/redfish/v1/Systems',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(system, 'System', autospec=True)
+    @mock.patch.object(v2_2_system, 'System', autospec=True)
     def test_get_system(self, mock_system):
         self.rsd.get_system('fake-system-id')
         mock_system.assert_called_once_with(
