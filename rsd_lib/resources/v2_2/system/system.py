@@ -16,6 +16,7 @@
 from sushy import exceptions
 
 from rsd_lib.resources.v2_1.system import system
+from rsd_lib.resources.v2_2.system import memory
 from rsd_lib.resources.v2_2.system import metrics
 from rsd_lib.resources.v2_2.system import processor
 from rsd_lib import utils
@@ -25,14 +26,15 @@ class System(system.System):
 
     _metrics = None  # ref to System metrics instance
     _processors = None  # ref to ProcessorCollection instance
+    _memory = None  # ref to ProcessorCollection instance
 
     def _get_metrics_path(self):
-        """Helper function to find the System path"""
-        system_col = self.json.get('Oem').get('Intel_RackScale').get('Metrics')
-        if not system_col:
+        """Helper function to find the System metrics path"""
+        metrics = self.json.get('Oem').get('Intel_RackScale').get('Metrics')
+        if not metrics:
             raise exceptions.MissingAttributeError(attribute='Metrics',
                                                    resource=self._path)
-        return utils.get_resource_identity(system_col)
+        return utils.get_resource_identity(metrics)
 
     @property
     def metrics(self):
@@ -62,10 +64,25 @@ class System(system.System):
 
         return self._processors
 
+    @property
+    def memory(self):
+        """Property to provide reference to `Metrics` instance
+
+        It is calculated once the first time it is queried. On refresh,
+        this property is reset.
+        """
+        if self._memory is None:
+            self._memory = memory.MemoryCollection(
+                self._conn, self._get_memory_collection_path(),
+                redfish_version=self.redfish_version)
+
+        return self._memory
+
     def refresh(self):
         super(System, self).refresh()
         self._metrics = None
         self._processors = None
+        self._memory = None
 
 
 class SystemCollection(system.SystemCollection):

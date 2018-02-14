@@ -15,31 +15,24 @@
 
 from sushy import exceptions
 from sushy.resources import base
-from sushy.resources.system import processor
 
-from rsd_lib.resources.v2_2.system import processor_metrics
+from rsd_lib.resources.v2_1.system import memory
+from rsd_lib.resources.v2_2.system import memory_metrics
 from rsd_lib import utils
 
 
-class StatusField(base.CompositeField):
-    state = base.Field('State')
-    health = base.Field('Health')
-    health_rollup = base.Field('HealthRollup')
+class Memory(memory.Memory):
 
-
-class Processor(processor.Processor):
-
-    status = StatusField('Status')
-    """The processor status"""
+    max_tdp_milliwatts = base.Field('MaxTDPMilliWatts', adapter=list)
 
     _metrics = None  # ref to System instance
 
     def _get_metrics_path(self):
-        """Helper function to find the System process metrics path"""
-        metrics = self.json.get('Oem').get('Intel_RackScale').get('Metrics')
+        """Helper function to find the System path"""
+        metrics = self.json.get('Metrics')
         if not metrics:
             raise exceptions.MissingAttributeError(
-                attribute='Processor Metrics', resource=self._path)
+                attribute='Memory Metrics', resource=self._path)
         return utils.get_resource_identity(metrics)
 
     @property
@@ -50,19 +43,19 @@ class Processor(processor.Processor):
         this property is reset.
         """
         if self._metrics is None:
-            self._metrics = processor_metrics.ProcessorMetrics(
+            self._metrics = memory_metrics.MemoryMetrics(
                 self._conn, self._get_metrics_path(),
                 redfish_version=self.redfish_version)
 
         return self._metrics
 
     def refresh(self):
-        super(Processor, self).refresh()
+        super(Memory, self).refresh()
         self._metrics = None
 
 
-class ProcessorCollection(processor.ProcessorCollection):
+class MemoryCollection(memory.MemoryCollection):
 
     @property
     def _resource_type(self):
-        return Processor
+        return Memory

@@ -21,6 +21,7 @@ from sushy import exceptions
 from sushy.resources.system import system as sushy_system
 
 from rsd_lib.resources.v2_1.system import system as v2_1_system
+from rsd_lib.resources.v2_2.system import memory
 from rsd_lib.resources.v2_2.system import metrics
 from rsd_lib.resources.v2_2.system import processor
 from rsd_lib.resources.v2_2.system import system
@@ -149,6 +150,54 @@ class SystemTestCase(testtools.TestCase):
         # | WHEN & THEN |
         self.assertIsInstance(self.system_inst.processors,
                               processor.ProcessorCollection)
+
+    def test_memory(self):
+        # check for the underneath variable value
+        self.assertIsNone(self.system_inst._memory)
+        # | GIVEN |
+        self.conn.get.return_value.json.reset_mock()
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'memory_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN |
+        actual_memory_col = self.system_inst.memory
+        # | THEN |
+        self.assertIsInstance(actual_memory_col,
+                              memory.MemoryCollection)
+        self.conn.get.return_value.json.assert_called_once_with()
+
+        # reset mock
+        self.conn.get.return_value.json.reset_mock()
+        # | WHEN & THEN |
+        # tests for same object on invoking subsequently
+        self.assertIs(actual_memory_col,
+                      self.system_inst.memory)
+        self.conn.get.return_value.json.assert_not_called()
+
+    def test_memory_on_refresh(self):
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'memory_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.system_inst.memory,
+                              memory.MemoryCollection)
+
+        # On refreshing the system instance...
+        with open('rsd_lib/tests/unit/json_samples/v2_2/system.json',
+                  'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.system_inst.refresh()
+        # | WHEN & THEN |
+        self.assertIsNone(self.system_inst._memory)
+
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'memory_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.system_inst.memory,
+                              memory.MemoryCollection)
 
 
 class SystemCollectionTestCase(testtools.TestCase):
