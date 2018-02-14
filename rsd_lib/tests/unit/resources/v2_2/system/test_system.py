@@ -18,7 +18,9 @@ import mock
 import testtools
 
 from sushy import exceptions
+from sushy.resources.system import system as sushy_system
 
+from rsd_lib.resources.v2_1.system import system as v2_1_system
 from rsd_lib.resources.v2_2.system import metrics
 from rsd_lib.resources.v2_2.system import processor
 from rsd_lib.resources.v2_2.system import system
@@ -36,6 +38,11 @@ class SystemTestCase(testtools.TestCase):
         self.system_inst = system.System(
             self.conn, '/redfish/v1/Systems/System2',
             redfish_version='1.0.2')
+
+    def test_class_inherit(self):
+        self.assertIsInstance(self.system_inst, system.System)
+        self.assertIsInstance(self.system_inst, v2_1_system.System)
+        self.assertIsInstance(self.system_inst, sushy_system.System)
 
     def test__get_metrics_path(self):
         self.assertEqual('/redfish/v1/Systems/System2/Metrics',

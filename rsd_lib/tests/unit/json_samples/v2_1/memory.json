@@ -1,0 +1,63 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Systems/Members/1/Memory/$entity",
+    "@odata.id": "/redfish/v1/Systems/System1/Memory/Dimm1",
+    "@odata.type": "#Memory.v1_1_0.Memory",
+    "Name": "DIMM",
+    "Id": "Dimm1",
+    "MemoryType": "DRAM",
+    "MemoryDeviceType": "DDR4",
+    "BaseModuleType": "LRDIMM",
+    "MemoryMedia": [
+        "DRAM"
+    ],
+    "CapacityMiB": 16384,
+    "DataWidthBits": 64,
+    "BusWidthBits": 72,
+    "Manufacturer": "Contoso",
+    "SerialNumber": "1A2B3B",
+    "PartNumber": "1A2B3D",
+    "AllowedSpeedsMHz": [
+        2133,
+        2400,
+        2667
+    ],
+    "FirmwareRevision": "RevAbc",
+    "FirmwareApiVersion": "ApiAbc",
+    "FunctionClasses": [
+        "Volatile"
+    ],
+    "VendorID": "vendorX",
+    "DeviceID": "deviceX",
+    "RankCount": 1,
+    "DeviceLocator": "PROC 1 DIMM 1",
+    "MemoryLocation": {
+        "Socket": 1,
+        "MemoryController": 1,
+        "Channel": 1,
+        "Slot": 1
+    },
+    "ErrorCorrection": "MultiBitECC",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "HealthRollup": "OK"
+    },
+    "OperatingSpeedMhz": 2400,
+    "Regions": [
+        {
+            "RegionId": "1",
+            "MemoryClassification": "Volatile",
+            "OffsetMiB": 0,
+            "SizeMiB": 16384
+        }
+    ],
+    "OperatingMemoryModes": [
+        "Volatile"
+    ],
+    "Oem": {
+        "Intel_RackScale": {
+            "@odata.type": "#Intel.Oem.DimmConfig",
+            "VoltageVolt": 1.35
+        }
+    }
+}

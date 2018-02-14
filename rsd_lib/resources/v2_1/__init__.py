@@ -14,12 +14,12 @@
 #    under the License.
 
 from sushy.resources import base
-from sushy.resources.system import system
 
 from rsd_lib.resources.v2_1.chassis import chassis
 from rsd_lib.resources.v2_1.fabric import fabric
 from rsd_lib.resources.v2_1.node import node
 from rsd_lib.resources.v2_1.storage_service import storage_service
+from rsd_lib.resources.v2_1.system import system
 
 
 class RSDLibV2_1(base.ResourceBase):
