@@ -149,3 +149,47 @@ class SystemTestCase(testtools.TestCase):
         # | WHEN & THEN |
         self.assertIsInstance(self.system_inst.processors,
                               processor.ProcessorCollection)
+
+
+class SystemCollectionTestCase(testtools.TestCase):
+
+    def setUp(self):
+        super(SystemCollectionTestCase, self).setUp()
+        self.conn = mock.Mock()
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'system_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.system_col = system.SystemCollection(
+            self.conn, '/redfish/v1/Systems',
+            redfish_version='1.1.0')
+
+    def test__parse_attributes(self):
+        self.system_col._parse_attributes()
+        self.assertEqual('1.1.0', self.system_col.redfish_version)
+        self.assertEqual(('/redfish/v1/Systems/System1',
+                          '/redfish/v1/Systems/System2'),
+                         self.system_col.members_identities)
+
+    @mock.patch.object(system, 'System', autospec=True)
+    def test_get_member(self, mock_system):
+        self.system_col.get_member(
+            '/redfish/v1/Systems/System1')
+        mock_system.assert_called_once_with(
+            self.system_col._conn,
+            '/redfish/v1/Systems/System1',
+            redfish_version=self.system_col.redfish_version)
+
+    @mock.patch.object(system, 'System', autospec=True)
+    def test_get_members(self, mock_system):
+        members = self.system_col.get_members()
+        calls = [
+            mock.call(self.system_col._conn,
+                      '/redfish/v1/Systems/System1',
+                      redfish_version=self.system_col.redfish_version),
+            mock.call(self.system_col._conn,
+                      '/redfish/v1/Systems/System2',
+                      redfish_version=self.system_col.redfish_version)
+        ]
+        mock_system.assert_has_calls(calls)
+        self.assertIsInstance(members, list)
+        self.assertEqual(2, len(members))

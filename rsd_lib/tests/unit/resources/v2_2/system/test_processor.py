@@ -114,3 +114,47 @@ class ProcessorTestCase(testtools.TestCase):
         # | WHEN & THEN |
         self.assertIsInstance(self.processor_inst.metrics,
                               processor_metrics.ProcessorMetrics)
+
+
+class ProcessorCollectionTestCase(testtools.TestCase):
+
+    def setUp(self):
+        super(ProcessorCollectionTestCase, self).setUp()
+        self.conn = mock.Mock()
+        with open('rsd_lib/tests/unit/json_samples/v2_2/'
+                  'processor_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.processor_col = processor.ProcessorCollection(
+            self.conn, '/redfish/v1/Systems',
+            redfish_version='1.1.0')
+
+    def test__parse_attributes(self):
+        self.processor_col._parse_attributes()
+        self.assertEqual('1.1.0', self.processor_col.redfish_version)
+        self.assertEqual(('/redfish/v1/Systems/System1/Processors/CPU1',
+                          '/redfish/v1/Systems/System1/Processors/CPU2'),
+                         self.processor_col.members_identities)
+
+    @mock.patch.object(processor, 'Processor', autospec=True)
+    def test_get_member(self, mock_system):
+        self.processor_col.get_member(
+            '/redfish/v1/Systems/System1/Processors/CPU1')
+        mock_system.assert_called_once_with(
+            self.processor_col._conn,
+            '/redfish/v1/Systems/System1/Processors/CPU1',
+            redfish_version=self.processor_col.redfish_version)
+
+    @mock.patch.object(processor, 'Processor', autospec=True)
+    def test_get_members(self, mock_system):
+        members = self.processor_col.get_members()
+        calls = [
+            mock.call(self.processor_col._conn,
+                      '/redfish/v1/Systems/System1/Processors/CPU1',
+                      redfish_version=self.processor_col.redfish_version),
+            mock.call(self.processor_col._conn,
+                      '/redfish/v1/Systems/System1/Processors/CPU2',
+                      redfish_version=self.processor_col.redfish_version)
+        ]
+        mock_system.assert_has_calls(calls)
+        self.assertIsInstance(members, list)
+        self.assertEqual(2, len(members))
