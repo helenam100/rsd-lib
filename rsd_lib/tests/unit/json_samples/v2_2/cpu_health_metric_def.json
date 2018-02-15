@@ -1,0 +1,37 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#MetricDefinition.MetricDefinition",
+    "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions/CPUHealth",
+    "@odata.type": "#MetricDefinition.v1_0_0.MetricDefinition",
+    "Id": "CPUHealth1",
+    "Name": "CPU1 IPMI Health Sensor",
+    "MetricType": "Discrete",
+    "SensorType": "PhysicalSensor",
+    "Implementation": "PhysicalSensor",
+    "SensingInterval": "PT1S",
+    "PhysicalContext": "CPU",
+    "DiscreteValues": [
+        "OK",
+        "Internal Error",
+        "Thermal Trip",
+        "FRB1 BIST Failure",
+        "FRB2 Hang in Post",
+        "FRB3 Startup Failure",
+        "Config Error",
+        "SMBIOS Uncorrectable Error",
+        "Processor Presence Detected",
+        "Processor Disabled",
+        "Terminator Presence Detected",
+        "Processor Throttled",
+        "Machine Check Exception",
+        "Correctable Machine Check Error"
+    ],
+    "MetricProperties": [
+        "/redfish/v1/Systems/System1/Processors/CPU1/Metrics#/CPUHealth"
+    ],
+    "Oem": {
+        "Intel_RackScale": {
+            "@odata.type": "#Intel.Oem.MetricDefinition",
+            "DiscreteMetricType": "Multiple"
+        }
+    }
+}

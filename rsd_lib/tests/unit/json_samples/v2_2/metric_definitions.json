@@ -1,0 +1,19 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#TelemetryService/MetricDefinitions/$entity",
+    "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions",
+    "@odata.type": "#MetricDefinitionCollection.MetricDefinitionCollection",
+    "Name": "Metric Definitions Collection",
+    "Description": "description-as-string",
+    "Members@odata.count": 5,
+    "Members": [
+        {
+            "@odata.id":"/redfish/v1/TelemetryService/MetricDefinitions/CPUTemperature"
+        },
+        {
+            "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions/CPUHealth"
+        },
+        {
+            "@odata.id":"/redfish/v1/TelemetryService/MetricDefinitions/CPUBandwidth"
+        }
+    ]
+}

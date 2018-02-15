@@ -66,7 +66,7 @@ class System(system.System):
 
     @property
     def memory(self):
-        """Property to provide reference to `Metrics` instance
+        """Property to provide reference to `Memory` instance
 
         It is calculated once the first time it is queried. On refresh,
         this property is reset.

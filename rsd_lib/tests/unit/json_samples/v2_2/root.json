@@ -31,13 +31,13 @@
             "ApiVersion": "2.2.0",
             "Services": {
                "@odata.id": "/redfish/v1/Services"
-           },
+            },
             "Nodes": {
                "@odata.id": "/redfish/v1/Nodes"
-           },
-           "EthernetSwitches": {
+            },
+            "EthernetSwitches": {
                "@odata.id": "/redfish/v1/EthernetSwitches"
-           }
+            }
         }
     },
     "Links": {}

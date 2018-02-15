@@ -1,0 +1,21 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#MetricDefinition.MetricDefinition",
+    "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions/CPUTemperature",
+    "@odata.type": "#MetricDefinition.v1_0_0.MetricDefinition",
+    "Description": "CPU1 Temperature MetricDefinition",
+    "Name": "Temperature MetricDefinition",
+    "Id": "TEMP1",
+    "SensorType": "Temperature",
+    "Implementation": "Physical",
+    "SensingInterval": "PT1S",
+    "MetricType": "Numeric",
+    "PhysicalContext": "CPU",
+    "Units": "Cel",
+    "MinReadingRange": 0,
+    "MaxReadingRange": 80,
+    "Precision": 1,
+    "Calibration": 2,
+    "MetricProperties": [
+        "/redfish/v1/Systems/System1/Processors/CPU1/Metrics#/TemperatureCelsius"
+    ]
+}

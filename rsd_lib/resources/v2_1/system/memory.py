@@ -35,7 +35,7 @@ class Memory(base.ResourceBase):
     """The memory name"""
 
     identity = base.Field('Id', required=True)
-    """The processor identity string"""
+    """The memory identity string"""
 
     memory_type = base.Field('MemoryType')
     """The type of memory"""

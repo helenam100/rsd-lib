@@ -1,0 +1,23 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#MetricDefinition.MetricDefinition",
+    "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions/CPUBandwidth",
+    "@odata.type": "#MetricDefinition.v1_0_0.MetricDefinition",
+    "Id": "CPUBandwidth",
+    "Name": "CPU Bandwidth type",
+    "MetricType": "Numeric",
+    "Implementation": "DigitalMeter",
+    "PhysicalContext": "CPU",
+    "SensingInterval": "PT1S",
+    "Units": "%",
+    "MinReadingRange": 0,
+    "MaxReadingRange": 100,
+    "MetricProperties": [
+        "/redfish/v1/Systems/System1/Processors/CPU1/Metrics#/CPUBandwidthPercent"
+    ],
+    "Oem": {
+        "Intel_RackScale": {
+            "@odata.type": "#Intel.Oem.MetricDefinition",
+            "CalculationPrecision": 5
+        }
+    }
+}

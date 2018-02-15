@@ -17,6 +17,7 @@ from sushy.resources import base
 
 from rsd_lib.resources import v2_1
 from rsd_lib.resources.v2_2.system import system
+from rsd_lib.resources.v2_2.telemetry import telemetry
 
 
 class RSDLibV2_2(v2_1.RSDLibV2_1):
@@ -51,3 +52,12 @@ class RSDLibV2_2(v2_1.RSDLibV2_1):
         """
         return system.SystemCollection(self._conn, self._systems_path,
                                        redfish_version=self.redfish_version)
+
+    def get_telemetry_service(self):
+        """Given the identity return a Telemetry Service object
+
+        :param identity: The identity of the Telemetry Service resource
+        :returns: The Telemetry Service object
+        """
+        return telemetry.Telemetry(self._conn, self._telemetry_service_path,
+                                   redfish_version=self.redfish_version)

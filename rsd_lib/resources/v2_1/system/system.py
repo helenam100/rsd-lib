@@ -25,7 +25,7 @@ class System(system.System):
     _memory = None  # ref to System memory collection instance
 
     def _get_memory_collection_path(self):
-        """Helper function to find the System path"""
+        """Helper function to find the memory path"""
         system_col = self.json.get('Memory')
         if not system_col:
             raise exceptions.MissingAttributeError(attribute='Memory',

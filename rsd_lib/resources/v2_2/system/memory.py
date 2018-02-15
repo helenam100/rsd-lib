@@ -28,7 +28,7 @@ class Memory(memory.Memory):
     _metrics = None  # ref to System instance
 
     def _get_metrics_path(self):
-        """Helper function to find the System path"""
+        """Helper function to find the memory metrics path"""
         metrics = self.json.get('Metrics')
         if not metrics:
             raise exceptions.MissingAttributeError(
