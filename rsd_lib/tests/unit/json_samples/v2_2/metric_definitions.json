@@ -4,7 +4,7 @@
     "@odata.type": "#MetricDefinitionCollection.MetricDefinitionCollection",
     "Name": "Metric Definitions Collection",
     "Description": "description-as-string",
-    "Members@odata.count": 5,
+    "Members@odata.count": 3,
     "Members": [
         {
             "@odata.id":"/redfish/v1/TelemetryService/MetricDefinitions/CPUTemperature"

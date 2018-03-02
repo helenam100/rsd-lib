@@ -1,0 +1,36 @@
+{
+    "@odata.context" : "/redfish/v1/$metadata#MetricDefinition.MetricDefinition",
+    "@odata.id" : "/redfish/v1/TelemetryService/MetricDefinitions/1-md-6",
+    "@odata.type" : "#MetricDefinition.v1_0_0.MetricDefinition",
+    "Id" : "1-md-6",
+    "Name" : "memoryTemperature",
+    "Description" : "Metric Definition description",
+    "SensorType" : "Temperature",
+    "Implementation" : "PhysicalSensor",
+    "SensingInterval" : "10.0s",
+    "MetricType" : "Numeric",
+    "PhysicalContext" : "SystemBoard",
+    "Units" : "Celsius",
+    "MinReadingRange" : null,
+    "MaxReadingRange" : null,
+    "MetricProperties" : [ "/redfish/v1/Systems/1-s-2/Memory/1-s-2-mm-4/Metrics"],
+    "Precision" : null,
+    "Calibration" : null,
+    "IsLinear" : true,
+    "Calculable" : null,
+    "DataType" : null,
+    "Accuracy" : null,
+    "TimeStampAccuracy" : null,
+    "CalculationTimeInterval" : null,
+    "CalculationAlgorithm" : null,
+    "DiscreteValues" : [ ],
+    "CalculationParameters" : [ ],
+    "Wildcards" : [ ],
+    "Oem" : {
+        "Intel_RackScale" : {
+            "@odata.type" : "#Intel.Oem.MetricDefinition",
+            "CalculationPrecision" : null,
+            "DiscreteMetricType" : null
+        }
+    }
+}
