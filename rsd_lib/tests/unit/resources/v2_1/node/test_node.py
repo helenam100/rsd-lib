@@ -66,6 +66,23 @@ class NodeTestCase(testtools.TestCase):
         self.assertEqual('OK', self.node_inst.processor_summary.status.health)
         self.assertEqual(
             'OK', self.node_inst.processor_summary.status.health_rollup)
+        self.assertEqual(
+            '/redfish/v1/Systems/System1', self.node_inst.links.system)
+        self.assertEqual(
+            ('/redfish/v1/Systems/System1/Processors/CPU1',),
+            self.node_inst.links.processors)
+        self.assertEqual(
+            ('/redfish/v1/Systems/System1/Memory/Dimm1',),
+            self.node_inst.links.memory)
+        self.assertEqual(
+            ('/redfish/v1/Systems/System1/EthernetInterfaces/LAN1',),
+            self.node_inst.links.ethernet_interfaces)
+        self.assertEqual(
+            ('/redfish/v1/Chassis/Blade1/Drives/1',),
+            self.node_inst.links.local_drives)
+        self.assertEqual(
+            ('/redfish/v1/Services/RSS1/Targets/target1',),
+            self.node_inst.links.remote_drives)
 
     def test__parse_attributes_missing_actions(self):
         self.node_inst.json.pop('Actions')

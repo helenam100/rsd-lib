@@ -25,6 +25,7 @@ from sushy import utils
 from rsd_lib.resources.v2_1.node import constants as node_cons
 from rsd_lib.resources.v2_1.node import mappings as node_maps
 from rsd_lib.resources.v2_1.node import schemas as node_schemas
+from rsd_lib import utils as rsd_lib_utils
 
 
 LOG = logging.getLogger(__name__)
@@ -109,6 +110,32 @@ class ProcessorSummaryField(base.CompositeField):
     """Basic information about processor model."""
 
 
+class LinksField(base.CompositeField):
+    system = base.Field('ComputerSystem',
+                        adapter=rsd_lib_utils.get_resource_identity)
+    """Link to base computer system of this node"""
+
+    processors = base.Field('Processors', default=(),
+                            adapter=utils.get_members_identities)
+    """Link to processors of this node"""
+
+    memory = base.Field('Memory', default=(),
+                        adapter=utils.get_members_identities)
+    """Link to memory of this node"""
+
+    ethernet_interfaces = base.Field('EthernetInterfaces', default=(),
+                                     adapter=utils.get_members_identities)
+    """Link to ethernet interfaces of this node"""
+
+    local_drives = base.Field('LocalDrives', default=(),
+                              adapter=utils.get_members_identities)
+    """Link to local driver of this node"""
+
+    remote_drives = base.Field('RemoteDrives', default=(),
+                               adapter=utils.get_members_identities)
+    """Link to remote drives of this node"""
+
+
 class Node(base.ResourceBase):
 
     boot = BootField('Boot', required=True)
@@ -142,6 +169,9 @@ class Node(base.ResourceBase):
 
     processor_summary = ProcessorSummaryField('Processors')
     """The summary info for the node processors in general detail"""
+
+    links = LinksField('Links')
+    """These links to related components of this composed node"""
 
     _system = None  # ref to System instance
 
