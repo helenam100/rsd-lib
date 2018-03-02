@@ -19,6 +19,7 @@ from sushy import connector
 from sushy.resources import base
 
 from rsd_lib.resources import v2_1
+from rsd_lib.resources import v2_2
 
 
 class RSDLib(base.ResourceBase):
@@ -60,10 +61,15 @@ class RSDLib(base.ResourceBase):
         :returns: a resource module
         """
         rsd_version = version.StrictVersion(self._rsd_api_version)
-        if rsd_version <= version.StrictVersion("2.1.0"):
+        if rsd_version < version.StrictVersion("2.2.0"):
             # Use the interface of RSD API 2.1.0 to interact with RSD 2.1.0 and
             # all previous version.
             return v2_1.RSDLibV2_1(self._conn, self._root_prefix,
+                                   redfish_version=self._redfish_version)
+        elif version.StrictVersion("2.2.0") <= rsd_version \
+            and rsd_version < version.StrictVersion("2.3.0"):
+            # Specific interface for RSD 2.2 version
+            return v2_2.RSDLibV2_2(self._conn, self._root_prefix,
                                    redfish_version=self._redfish_version)
         else:
             raise NotImplementedError(
