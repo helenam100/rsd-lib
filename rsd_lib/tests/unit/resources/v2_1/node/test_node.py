@@ -22,6 +22,7 @@ from sushy import exceptions
 from sushy.resources.system import system
 
 from rsd_lib.resources.v2_1.node import constants as node_cons
+from rsd_lib.resources.v2_1.node import mappings as node_maps
 from rsd_lib.resources.v2_1.node import node
 from rsd_lib.tests.unit.fakes import request_fakes
 
@@ -306,10 +307,14 @@ class NodeTestCase(testtools.TestCase):
                           'invalid-target')
 
     def test_set_node_boot_source_invalid_enabled(self):
-        self.assertRaises(exceptions.InvalidParameterValueError,
-                          self.node_inst.set_node_boot_source,
-                          node_cons.BOOT_SOURCE_TARGET_HDD,
-                          enabled='invalid-enabled')
+        with self.assertRaisesRegex(
+            exceptions.InvalidParameterValueError,
+            '"enabled" value.*{0}'.format(
+                list(node_maps.BOOT_SOURCE_ENABLED_MAP_REV))):
+
+            self.node_inst.set_node_boot_source(
+                node_cons.BOOT_SOURCE_TARGET_HDD,
+                enabled='invalid-enabled')
 
     def test__get_system_path_missing_systems_attr(self):
         self.node_inst._json.get('Links').pop('ComputerSystem')
