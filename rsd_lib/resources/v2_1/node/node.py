@@ -446,7 +446,9 @@ class NodeCollection(base.ResourceCollectionBase):
     def _create_compose_request(self, name=None, description=None,
                                 processor_req=None, memory_req=None,
                                 remote_drive_req=None, local_drive_req=None,
-                                ethernet_interface_req=None):
+                                ethernet_interface_req=None,
+                                total_system_core_req=None,
+                                total_system_memory_req=None):
 
         request = {}
 
@@ -480,12 +482,23 @@ class NodeCollection(base.ResourceCollectionBase):
                      node_schemas.ethernet_interface_req_schema)
             request['EthernetInterfaces'] = ethernet_interface_req
 
+        if total_system_core_req is not None:
+            validate(total_system_core_req,
+                     node_schemas.total_system_core_req_schema)
+            request['TotalSystemCoreCount'] = total_system_core_req
+
+        if total_system_memory_req is not None:
+            validate(total_system_memory_req,
+                     node_schemas.total_system_memory_req_schema)
+            request['TotalSystemMemoryMiB'] = total_system_memory_req
+
         return request
 
     def compose_node(self, name=None, description=None,
                      processor_req=None, memory_req=None,
                      remote_drive_req=None, local_drive_req=None,
-                     ethernet_interface_req=None):
+                     ethernet_interface_req=None, total_system_core_req=None,
+                     total_system_memory_req=None):
         """Compose a node from RackScale hardware
 
         :param name: Name of node
@@ -495,7 +508,22 @@ class NodeCollection(base.ResourceCollectionBase):
         :param remote_drive_req: JSON for node remote drives
         :param local_drive_req: JSON for node local drives
         :param ethernet_interface_req: JSON for node ethernet ports
+        :param total_system_core_req: Total processor cores available in
+            composed node
+        :param total_system_memory_req: Total memory available in composed node
         :returns: The location of the composed node
+
+        When the 'processor_req' is not none: it need a computer system
+        contains processors whose each processor meet all conditions in the
+        value.
+
+        When the 'total_system_core_req' is not none: it need a computer
+        system contains processors whose cores sum up to number equal or
+        greater than 'total_system_core_req'.
+
+        When both values are not none: it need meet all conditions.
+
+        'memory_req' and 'total_system_memory_req' is the same.
         """
         target_uri = self._get_compose_action_element().target_uri
         properties = self._create_compose_request(
@@ -504,7 +532,9 @@ class NodeCollection(base.ResourceCollectionBase):
             memory_req=memory_req,
             remote_drive_req=remote_drive_req,
             local_drive_req=local_drive_req,
-            ethernet_interface_req=ethernet_interface_req)
+            ethernet_interface_req=ethernet_interface_req,
+            total_system_core_req=total_system_core_req,
+            total_system_memory_req=total_system_memory_req)
         resp = self._conn.post(target_uri, data=properties)
         LOG.info("Node created at %s", resp.headers['Location'])
         node_url = resp.headers['Location']

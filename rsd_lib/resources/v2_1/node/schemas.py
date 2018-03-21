@@ -171,3 +171,11 @@ ethernet_interface_req_schema = {
         'additionalProperties': False,
     }]
 }
+
+total_system_core_req_schema = {
+    'type': 'number'
+}
+
+total_system_memory_req_schema = {
+    'type': 'number'
+}

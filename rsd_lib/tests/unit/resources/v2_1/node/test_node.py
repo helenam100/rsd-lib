@@ -490,12 +490,16 @@ class NodeCollectionTestCase(testtools.TestCase):
             }],
             'Memory': [{
                 'CapacityMiB': 8000
-            }]
+            }],
+            'TotalSystemCoreCount': 8,
+            'TotalSystemMemoryMiB': 16000
         }
         result = self.node_col.compose_node(
             name='test', description='this is a test node',
             processor_req=[{'TotalCores': 4}],
-            memory_req=[{'CapacityMiB': 8000}])
+            memory_req=[{'CapacityMiB': 8000}],
+            total_system_core_req=8,
+            total_system_memory_req=16000)
         self.node_col._conn.post.assert_called_once_with(
             '/redfish/v1/Nodes/Actions/Allocate', data=reqs)
         self.assertEqual(result, '/redfish/v1/Nodes/1')
