@@ -1,0 +1,75 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
+    "@odata.id": "/redfish/v1/Managers/PSME",
+    "@odata.type": "#Manager.v1_2_0.Manager",
+    "Id": "1",
+    "Name": "Manager",
+    "ManagerType": "BMC",
+    "Description": "BMC",
+    "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
+    "UUID": "00000000-0000-0000-0000-000000000000",
+    "Model": "Joo Janta 200",
+    "DateTime": "2015-03-13T04:14:33+06:00",
+    "DateTimeLocalOffset": "+06:00",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "HealthRollup": "OK"
+    },
+    "GraphicalConsole": {
+        "ServiceEnabled": true,
+        "MaxConcurrentSessions": 2,
+        "ConnectTypesSupported": [
+            "KVMIP"
+        ]
+    },
+    "SerialConsole": {
+        "ServiceEnabled": true,
+        "MaxConcurrentSessions": 1,
+        "ConnectTypesSupported": [
+            "Telnet",
+            "SSH",
+            "IPMI"
+        ]
+    },
+    "CommandShell": {
+        "ServiceEnabled": true,
+        "MaxConcurrentSessions": 4,
+        "ConnectTypesSupported": [
+            "Telnet",
+            "SSH"
+        ]
+    },
+    "FirmwareVersion": "1.00",
+    "NetworkProtocol": {
+        "@odata.id": "/redfish/v1/Managers/PSME/NetworkProtocol"
+    },
+    "EthernetInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/PSME/EthernetInterfaces"
+    },
+    "Links": {
+        "@odata.type": "#Manager.v1_1_0.Links",
+        "ManagerForServers": [],
+        "ManagerForChassis": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/FabricModule1"
+            }
+        ],
+        "ManagerInChassis": {
+            "@odata.id": "/redfish/v1/Chassis/Drawer1"
+        },
+        "Oem": {
+            "Intel_RackScale": {
+                "@odata.type": "#Intel.Oem.ManagerLinks",
+                "ManagerForServices": [
+                    {
+                        "@odata.id": "/redfish/v1/Services/RSS1"
+                    }
+                ],
+                "ManagerForSwitches": []
+            }
+        }
+    },
+    "Oem": {},
+    "PowerState": "On"
+}

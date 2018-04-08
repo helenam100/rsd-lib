@@ -20,6 +20,7 @@ import testtools
 from rsd_lib.resources import v2_1
 from rsd_lib.resources.v2_1.chassis import chassis
 from rsd_lib.resources.v2_1.fabric import fabric
+from rsd_lib.resources.v2_1.manager import manager
 from rsd_lib.resources.v2_1.node import node
 from rsd_lib.resources.v2_1.storage_service import storage_service
 from rsd_lib.resources.v2_1.system import system
@@ -44,6 +45,7 @@ class RSDLibV2_1TestCase(testtools.TestCase):
         self.assertEqual("/redfish/v1/Services",
                          self.rsd._storage_service_path)
         self.assertEqual("/redfish/v1/Fabrics", self.rsd._fabrics_path)
+        self.assertEqual("/redfish/v1/Managers", self.rsd._managers_path)
 
     @mock.patch.object(system, 'SystemCollection', autospec=True)
     def test_get_system_collection(self, mock_system_collection):
@@ -116,3 +118,19 @@ class RSDLibV2_1TestCase(testtools.TestCase):
         mock_storage_service.assert_called_once_with(
             self.rsd._conn, 'fake-storage-service-id',
             redfish_version=self.rsd.redfish_version)
+
+    @mock.patch.object(manager, 'ManagerCollection', autospec=True)
+    def test_get_manager_collection(self,
+                                    mock_manager_collection):
+        self.rsd.get_manager_collection()
+        mock_manager_collection.assert_called_once_with(
+            self.rsd._conn, '/redfish/v1/Managers',
+            redfish_version=self.rsd.redfish_version)
+
+    @mock.patch.object(manager, 'Manager', autospec=True)
+    def test_get_manager(self, mock_manager_service):
+        self.rsd.get_manager('fake-manager-id')
+        mock_manager_service.assert_called_once_with(
+            self.rsd._conn, 'fake-manager-id',
+            redfish_version=self.rsd.redfish_version
+        )

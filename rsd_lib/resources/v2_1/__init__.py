@@ -17,6 +17,7 @@ from sushy.resources import base
 
 from rsd_lib.resources.v2_1.chassis import chassis
 from rsd_lib.resources.v2_1.fabric import fabric
+from rsd_lib.resources.v2_1.manager import manager
 from rsd_lib.resources.v2_1.node import node
 from rsd_lib.resources.v2_1.storage_service import storage_service
 from rsd_lib.resources.v2_1.system import system
@@ -39,6 +40,9 @@ class RSDLibV2_1(base.ResourceBase):
 
     _fabrics_path = base.Field(['Fabrics', '@odata.id'], required=True)
     """FabricCollection path"""
+
+    _managers_path = base.Field(['Managers', '@odata.id'], required=True)
+    """ManagerCollection path"""
 
     _redfish_version = base.Field(['RedfishVersion'], required=True)
     """Redfish version"""
@@ -158,3 +162,24 @@ class RSDLibV2_1(base.ResourceBase):
         return fabric.Fabric(self._conn,
                              identity,
                              redfish_version=self.redfish_version)
+
+    def get_manager_collection(self):
+        """Get the ManagerCollection object
+
+        :raises: MissingAttributeError, if the collection attribute is
+            not found
+        :returns: a ManagerCollection object
+        """
+        return manager.ManagerCollection(self._conn,
+                                         self._managers_path,
+                                         redfish_version=self.redfish_version)
+
+    def get_manager(self, identity):
+        """Given the identity return a Manager object
+
+        :param identity: The identity of the Manager resource
+        :returns: The Manager object
+        """
+        return manager.Manager(self._conn,
+                               identity,
+                               redfish_version=self.redfish_version)
