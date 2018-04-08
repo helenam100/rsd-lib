@@ -41,7 +41,7 @@ class RSDLibV2_1(base.ResourceBase):
     """FabricCollection path"""
 
     _redfish_version = base.Field(['RedfishVersion'], required=True)
-    """FabricCollection path"""
+    """Redfish version"""
 
     _rsd_api_version = base.Field(['Oem', 'Intel_RackScale', 'ApiVersion'],
                                   required=True)
