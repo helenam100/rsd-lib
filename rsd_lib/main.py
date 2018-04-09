@@ -20,6 +20,7 @@ from sushy.resources import base
 
 from rsd_lib.resources import v2_1
 from rsd_lib.resources import v2_2
+from rsd_lib.resources import v2_3
 
 
 class RSDLib(base.ResourceBase):
@@ -70,6 +71,11 @@ class RSDLib(base.ResourceBase):
             and rsd_version < version.StrictVersion("2.3.0"):
             # Specific interface for RSD 2.2 version
             return v2_2.RSDLibV2_2(self._conn, self._root_prefix,
+                                   redfish_version=self._redfish_version)
+        elif version.StrictVersion("2.3.0") <= rsd_version \
+            and rsd_version < version.StrictVersion("2.4.0"):
+            # Specific interface for RSD 2.2 version
+            return v2_3.RSDLibV2_3(self._conn, self._root_prefix,
                                    redfish_version=self._redfish_version)
         else:
             raise NotImplementedError(

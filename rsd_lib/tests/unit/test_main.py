@@ -22,6 +22,7 @@ import testtools
 from rsd_lib import main
 from rsd_lib.resources import v2_1
 from rsd_lib.resources import v2_2
+from rsd_lib.resources import v2_3
 
 
 class RSDLibTestCase(testtools.TestCase):
@@ -41,9 +42,10 @@ class RSDLibTestCase(testtools.TestCase):
         self.assertEqual("2.1.0", self.rsd._rsd_api_version)
         self.assertEqual("1.0.2", self.rsd._redfish_version)
 
+    @mock.patch.object(v2_3, 'RSDLibV2_3', autospec=True)
     @mock.patch.object(v2_2, 'RSDLibV2_2', autospec=True)
     @mock.patch.object(v2_1, 'RSDLibV2_1', autospec=True)
-    def test_factory(self, mock_rsdlibv2_1, mock_rsdlibv2_2):
+    def test_factory(self, mock_rsdlibv2_1, mock_rsdlibv2_2, mock_rsdlibv2_3):
         self.rsd.factory()
         mock_rsdlibv2_1.assert_called_once_with(
             self.rsd._conn,
@@ -52,7 +54,14 @@ class RSDLibTestCase(testtools.TestCase):
 
         self.rsd._rsd_api_version = "2.2.0"
         self.rsd.factory()
-        mock_rsdlibv2_1.assert_called_once_with(
+        mock_rsdlibv2_2.assert_called_once_with(
+            self.rsd._conn,
+            self.rsd._root_prefix,
+            redfish_version=self.rsd._redfish_version)
+
+        self.rsd._rsd_api_version = "2.3.0"
+        self.rsd.factory()
+        mock_rsdlibv2_3.assert_called_once_with(
             self.rsd._conn,
             self.rsd._root_prefix,
             redfish_version=self.rsd._redfish_version)
