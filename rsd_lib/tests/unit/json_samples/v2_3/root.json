@@ -23,7 +23,7 @@
       "@odata.id": "/redfish/v1/Fabrics"
     },
     "StorageServices": {
-      "@odata.id": "/redfish/v1/StorageSerices"
+      "@odata.id": "/redfish/v1/StorageServices"
     },
     "Oem": {
         "Intel_RackScale": {

@@ -1,0 +1,41 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StorageService.StorageService",
+    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1",
+    "@odata.type": "#StorageService.v1_0_0.StorageService",
+    "Id": "NVMeoE1",
+    "Name": "Storage Service",
+    "Description": "Storage Service description",
+    "Drives": {
+        "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Drives"
+    },
+    "Endpoints": {
+        "@odata.id": "/redfish/v1/Fabrics/1/Endpoints"
+    },
+    "Links": {
+        "HostingSystem": {
+            "@odata.id": "/redfish/v1/Systems/Target"
+        },
+        "Oem": {
+            "Intel_RackScale": {
+                "@odata.type": "#Intel.Oem.StorageServicesLinks",
+                "ManagedBy": [
+                    {
+                        "@odata.id": "/redfish/v1/Managers/1"
+                    }
+                ]
+            }
+        }
+    },
+    "Oem": {},
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    },
+    "StoragePools": {
+        "@odata.id": "/redfish/v1/StorageServices/1/StoragePools"
+    },
+    "Volumes": {
+        "@odata.id": "/redfish/v1/StorageServices/1/Volumes"
+    }
+}

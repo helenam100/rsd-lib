@@ -23,6 +23,8 @@ from rsd_lib.resources.v2_1.node import node as v2_1_node
 from rsd_lib.resources.v2_2.system import system as v2_2_system
 from rsd_lib.resources import v2_3
 from rsd_lib.resources.v2_3.node import node as v2_3_node
+from rsd_lib.resources.v2_3.storage_service import storage_service \
+    as v2_3_storage_service
 
 
 class RSDLibV2_3TestCase(testtools.TestCase):
@@ -42,7 +44,8 @@ class RSDLibV2_3TestCase(testtools.TestCase):
         self.assertEqual("/redfish/v1/Nodes", self.rsd._nodes_path)
         self.assertEqual("/redfish/v1/Chassis", self.rsd._chassis_path)
         self.assertEqual("/redfish/v1/Fabrics", self.rsd._fabrics_path)
-        self.assertEqual(None, self.rsd._storage_service_path)
+        self.assertEqual("/redfish/v1/StorageServices",
+                         self.rsd._storage_service_path)
         self.assertEqual(None, self.rsd._telemetry_service_path)
 
     @mock.patch.object(v2_2_system, 'SystemCollection', autospec=True)
@@ -101,21 +104,21 @@ class RSDLibV2_3TestCase(testtools.TestCase):
             self.rsd._conn, 'fake-chassis-id',
             redfish_version=self.rsd.redfish_version)
 
-    # @mock.patch.object(v2_1_storage_service, 'StorageServiceCollection',
-    #                    autospec=True)
-    # def test_get_storage_service_collection(self,
-    #                                         mock_storage_service_collection):
-    #     self.rsd.get_storage_service_collection()
-    #     mock_storage_service_collection.assert_called_once_with(
-    #         self.rsd._conn, '/redfish/v1/Services',
-    #         redfish_version=self.rsd.redfish_version)
+    @mock.patch.object(v2_3_storage_service, 'StorageServiceCollection',
+                       autospec=True)
+    def test_get_storage_service_collection(self,
+                                            mock_storage_service_collection):
+        self.rsd.get_storage_service_collection()
+        mock_storage_service_collection.assert_called_once_with(
+            self.rsd._conn, '/redfish/v1/StorageServices',
+            redfish_version=self.rsd.redfish_version)
 
-    # @mock.patch.object(v2_1_storage_service, 'StorageService', autospec=True)
-    # def test_get_storage_service(self, mock_storage_service):
-    #     self.rsd.get_storage_service('fake-storage-service-id')
-    #     mock_storage_service.assert_called_once_with(
-    #         self.rsd._conn, 'fake-storage-service-id',
-    #         redfish_version=self.rsd.redfish_version)
+    @mock.patch.object(v2_3_storage_service, 'StorageService', autospec=True)
+    def test_get_storage_service(self, mock_storage_service):
+        self.rsd.get_storage_service('fake-storage-service-id')
+        mock_storage_service.assert_called_once_with(
+            self.rsd._conn, 'fake-storage-service-id',
+            redfish_version=self.rsd.redfish_version)
 
     # @mock.patch.object(v2_2_telemetry, 'Telemetry', autospec=True)
     # def test_get_telemetry_service(self, mock_telemetry_service):
