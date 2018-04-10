@@ -54,6 +54,18 @@ class StorageServiceTestCase(testtools.TestCase):
                          self.volume_inst.capacity_sources[0].providing_pools)
         self.assertEqual(3071983104,
                          self.volume_inst.capacity_sources[0].allocated_Bytes)
+        self.assertEqual(
+            '/dev/nvme1n1p1',
+            self.volume_inst.identifiers[0].durable_name)
+        self.assertEqual(
+            'SystemPath',
+            self.volume_inst.identifiers[0].durable_name_format)
+        self.assertEqual(
+            'iqn.2001-04.com.example:diskarrays-sn-a8675309',
+            self.volume_inst.identifiers[1].durable_name)
+        self.assertEqual(
+            'iQN',
+            self.volume_inst.identifiers[1].durable_name_format)
         self.assertEqual(('/redfish/v1/Fabrics/NVMeoE/Endpoints/1',),
                          self.volume_inst.links.endpoints)
         self.assertEqual(

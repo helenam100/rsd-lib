@@ -47,6 +47,11 @@ class LinksField(base.CompositeField):
     """Link to telemetry metrics of this volume"""
 
 
+class IdentifiersField(base.ListField):
+    durable_name = base.Field('DurableName')
+    durable_name_format = base.Field('DurableNameFormat')
+
+
 class ReplicaInfosField(base.ListField):
     replica_readonly_access = base.Field('ReplicaReadOnlyAccess')
     replica_type = base.Field('ReplicaType')
@@ -92,6 +97,9 @@ class Volume(base.ResourceBase):
 
     capacity_sources = CapacitySourcesField('CapacitySources')
     """The logical drive status"""
+
+    identifiers = IdentifiersField('Identifiers')
+    """These identifiers list of this volume"""
 
     links = LinksField('Links')
     """These links to related components of this volume"""

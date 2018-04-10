@@ -1,90 +1,90 @@
 {
-	"@odata.context": "/redfish/v1/$metadata#Volume.Volume",
-  	"@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/1",
-  	"@odata.type": "#Volume.v1_1_0.Volume",
-  	"Description": "Volume description",
-  	"Id": "1",
-  	"Model": null,
-  	"Manufacturer": null,
-  	"Name": "NVMe remote storage",
-  	"AccessCapabilities": [
-		"Read",
-		"Write"
-	],
-  	"CapacityBytes": 3071983104,
-  	"Actions": {
-    	"#Volume.Initialize": {
-      		"target":
-				"/redfish/v1/StorageServices/NVMeoE1/Volumes/1/Actions/Volume.Initialize"
-    	},
-    	"Oem": {}
-	},
-  	"Capacity": {
-    	"Data": {
-    		"AllocatedBytes": 3071983104
-    	}
-  	},
-  	"CapacitySources": [
-    	{
-    		"ProvidingPools": [
-        		{
-        			"@odata.id": "/redfish/v1/StorageServices/1/StoragePools/2"
-        		}
-      		],
-      		"ProvidedCapacity": {
-        		"Data": {
-        			"AllocatedBytes": 3071983104
-        		}
-        	}
+    "@odata.context": "/redfish/v1/$metadata#Volume.Volume",
+    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/1",
+    "@odata.type": "#Volume.v1_1_0.Volume",
+    "Description": "Volume description",
+    "Id": "1",
+    "Model": null,
+    "Manufacturer": null,
+    "Name": "NVMe remote storage",
+    "AccessCapabilities": [
+        "Read",
+        "Write"
+    ],
+    "CapacityBytes": 3071983104,
+    "Actions": {
+        "#Volume.Initialize": {
+            "target":
+                "/redfish/v1/StorageServices/NVMeoE1/Volumes/1/Actions/Volume.Initialize"
+        },
+        "Oem": {}
+    },
+    "Capacity": {
+        "Data": {
+            "AllocatedBytes": 3071983104
+        }
+    },
+    "CapacitySources": [
+        {
+            "ProvidingPools": [
+                {
+                    "@odata.id": "/redfish/v1/StorageServices/1/StoragePools/2"
+                }
+            ],
+            "ProvidedCapacity": {
+                "Data": {
+                    "AllocatedBytes": 3071983104
+                }
+            }
         }
     ],
   "Identifiers": [
-    	{
-    		"DurableName": "/dev/nvme1n1p1",
-    		"DurableNameFormat": "SystemPath"
-    	},
-    	{
-    		"DurableName": "iqn.2001-04.com.example:diskarrays-sn-a8675309",
-  			"DurableNameFormat": "iQN"
-  		}
-  	],
-  	"Links": {
-    	"Oem": {
-      		"Intel_RackScale": {
-        		"@odata.type": "#Intel.Oem.VolumeLinks",
-        		"Endpoints": [
-          			{
-          				"@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints/1"
-        	  		}
-          		],
-        		"Metrics": {
-					"@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/1/Metrics"
-				}
-			}
-		},
-		"Drives": []
-	},
-  	"ReplicaInfos": [
-    	{
-    		"ReplicaReadOnlyAccess": "SourceElement",
-      		"ReplicaType": "Snapshot",
-      		"ReplicaRole": "Target",
-      		"Replica": {
-  				"@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/2"
-  			}
-  		}
-  	],
-  	"Status": {
-    	"Health": "OK",
-    	"HealthRollup": "OK",
-  		"State": "Enabled"
-  	},
-  	"Oem": {
-    	"Intel_RackScale": {
-      		"@odata.type": "#Intel.Oem.Volume",
-      		"Bootable": false,
-      		"Erased": null,
-			"EraseOnDetach": true
-		}
-	}
+        {
+            "DurableName": "/dev/nvme1n1p1",
+            "DurableNameFormat": "SystemPath"
+        },
+        {
+            "DurableName": "iqn.2001-04.com.example:diskarrays-sn-a8675309",
+            "DurableNameFormat": "iQN"
+        }
+    ],
+    "Links": {
+        "Oem": {
+            "Intel_RackScale": {
+                "@odata.type": "#Intel.Oem.VolumeLinks",
+                "Endpoints": [
+                    {
+                        "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints/1"
+                    }
+                ],
+                "Metrics": {
+                    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/1/Metrics"
+                }
+            }
+        },
+        "Drives": []
+    },
+    "ReplicaInfos": [
+        {
+            "ReplicaReadOnlyAccess": "SourceElement",
+            "ReplicaType": "Snapshot",
+            "ReplicaRole": "Target",
+            "Replica": {
+                "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/2"
+            }
+        }
+    ],
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    },
+    "Oem": {
+        "Intel_RackScale": {
+            "@odata.type": "#Intel.Oem.Volume",
+            "Bootable": false,
+            "Erased": null,
+            "EraseOnDetach": true
+        }
+    }
 }

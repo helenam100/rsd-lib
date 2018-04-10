@@ -1,11 +1,11 @@
 {
-	"@odata.context": "/redfish/v1/$metadata#StorageService.StorageService",
-  	"@odata.id": "/redfish/v1/StorageServices",
-  	"@odata.type": "#StorageServiceCollection.StorageServiceCollection",
-  	"Name": "Storage Services Collection",
-  	"Description": "Storage Service Collection",
-  	"Members@odata.count": 1,
-  	"Members": [
-		{ "@odata.id": "/redfish/v1/StorageServices/NVMeoE1" }
-	]
+    "@odata.context": "/redfish/v1/$metadata#StorageService.StorageService",
+    "@odata.id": "/redfish/v1/StorageServices",
+    "@odata.type": "#StorageServiceCollection.StorageServiceCollection",
+    "Name": "Storage Services Collection",
+    "Description": "Storage Service Collection",
+    "Members@odata.count": 1,
+    "Members": [
+        { "@odata.id": "/redfish/v1/StorageServices/NVMeoE1" }
+    ]
 }
