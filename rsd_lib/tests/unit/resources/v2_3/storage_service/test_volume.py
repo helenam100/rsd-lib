@@ -14,9 +14,10 @@
 #    under the License.
 
 import json
-
 import mock
 import testtools
+
+from sushy import exceptions
 
 from rsd_lib.resources.v2_3.storage_service import volume
 
@@ -70,6 +71,41 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertEqual(False, self.volume_inst.bootable)
         self.assertEqual(None, self.volume_inst.erased)
         self.assertEqual(True, self.volume_inst.erase_on_detach)
+
+    def test_update_volume(self):
+        self.volume_inst.update(bootable=True)
+        self.volume_inst._conn.patch.assert_called_once_with(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1',
+            data={'Oem': {'Intel_RackScale': {"Bootable": True}}})
+
+        self.volume_inst._conn.patch.reset_mock()
+        self.volume_inst.update(erased=False)
+        self.volume_inst._conn.patch.assert_called_once_with(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1',
+            data={'Oem': {'Intel_RackScale': {"Erased": False}}})
+
+        self.volume_inst._conn.patch.reset_mock()
+        self.volume_inst.update(bootable=False, erased=True)
+        self.volume_inst._conn.patch.assert_called_once_with(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1',
+            data={'Oem': {'Intel_RackScale': {"Bootable": False,
+                                              "Erased": True}}})
+
+    def test_update_volume_with_invalid_parameter(self):
+        with self.assertRaisesRegexp(
+            ValueError,
+            'At least "bootable" or "erased" parameter has to be specified'):
+            self.volume_inst.update()
+
+        with self.assertRaisesRegexp(
+            exceptions.InvalidParameterValueError,
+            'The parameter "bootable" value "fake-value" is invalid'):
+            self.volume_inst.update(bootable='fake-value')
+
+        with self.assertRaisesRegexp(
+            exceptions.InvalidParameterValueError,
+            'The parameter "erased" value "fake-value" is invalid'):
+            self.volume_inst.update(bootable=True, erased='fake-value')
 
 
 class VolumeCollectionTestCase(testtools.TestCase):

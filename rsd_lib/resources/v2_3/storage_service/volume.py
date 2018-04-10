@@ -15,6 +15,7 @@
 
 import logging
 
+from sushy import exceptions
 from sushy.resources import base
 from sushy import utils
 
@@ -112,6 +113,35 @@ class Volume(base.ResourceBase):
             the object according to schema of the given version.
         """
         super(Volume, self).__init__(connector, identity, redfish_version)
+
+    def update(self, bootable=None, erased=None):
+        """Update volume properties
+
+        :param bootable: Change bootable ability of the volume
+        :param erased: Provide information if the drive was erased
+        :raises: BadRequestError if at least one param isn't specified
+        """
+        if bootable is None and erased is None:
+            raise ValueError('At least "bootable" or "erased" parameter has '
+                             'to be specified')
+
+        if bootable and not isinstance(bootable, bool):
+            raise exceptions.InvalidParameterValueError(
+                parameter='bootable', value=bootable,
+                valid_values=[True, False])
+
+        if erased and not isinstance(erased, bool):
+            raise exceptions.InvalidParameterValueError(
+                parameter='erased', value=erased,
+                valid_values=[True, False])
+
+        data = {'Oem': {'Intel_RackScale': {}}}
+        if bootable is not None:
+            data['Oem']['Intel_RackScale']['Bootable'] = bootable
+        if erased is not None:
+            data['Oem']['Intel_RackScale']['Erased'] = erased
+
+        self._conn.patch(self.path, data=data)
 
 
 class VolumeCollection(base.ResourceCollectionBase):
