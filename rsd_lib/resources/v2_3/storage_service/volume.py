@@ -55,6 +55,14 @@ class ReplicaInfosField(base.ListField):
                          adapter=rsd_lib_utils.get_resource_identity)
 
 
+class InitializeActionField(base.CompositeField):
+    target_uri = base.Field('target', required=True)
+
+
+class VolumeActionsField(base.CompositeField):
+    initialize = InitializeActionField('#Volume.Initialize')
+
+
 class Volume(base.ResourceBase):
 
     identity = base.Field('Id', required=True)
@@ -104,6 +112,8 @@ class Volume(base.ResourceBase):
                                  adapter=bool)
     """The rrase on detach info of this volume"""
 
+    _actions = VolumeActionsField('Actions', required=True)
+
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a LogicalDrive
 
@@ -142,6 +152,31 @@ class Volume(base.ResourceBase):
             data['Oem']['Intel_RackScale']['Erased'] = erased
 
         self._conn.patch(self.path, data=data)
+
+    def _get_initialize_action_element(self):
+        initialize_action = self._actions.initialize
+        if not initialize_action:
+            raise exceptions.MissingActionError(
+                action='#Volume.Initialize',
+                resource=self._path)
+        return initialize_action
+
+    def initialize(self, init_type):
+        """Change initialize type of this volume
+
+        :param type: volume initialize type
+        :raises: InvalidParameterValueError if invalid "type" parameter
+        """
+        allowed_init_type_values = ['Fast', 'Slow']
+        if init_type not in allowed_init_type_values:
+            raise exceptions.InvalidParameterValueError(
+                parameter='init_type', value=init_type,
+                valid_values=allowed_init_type_values)
+
+        data = {"InitializeType": init_type}
+
+        target_uri = self._get_initialize_action_element().target_uri
+        self._conn.post(target_uri, data=data)
 
     def delete(self):
         """Delete this volume"""

@@ -72,6 +72,12 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertEqual(None, self.volume_inst.erased)
         self.assertEqual(True, self.volume_inst.erase_on_detach)
 
+    def test__parse_attributes_missing_actions(self):
+        self.volume_inst.json.pop('Actions')
+        self.assertRaisesRegex(
+            exceptions.MissingAttributeError, 'attribute Actions',
+            self.volume_inst._parse_attributes)
+
     def test_update_volume(self):
         self.volume_inst.update(bootable=True)
         self.volume_inst._conn.patch.assert_called_once_with(
@@ -106,6 +112,33 @@ class StorageServiceTestCase(testtools.TestCase):
             exceptions.InvalidParameterValueError,
             'The parameter "erased" value "fake-value" is invalid'):
             self.volume_inst.update(bootable=True, erased='fake-value')
+
+    def test__get_initialize_action_element(self):
+        value = self.volume_inst._get_initialize_action_element()
+        self.assertEqual("/redfish/v1/StorageServices/NVMeoE1/Volumes/1/"
+                         "Actions/Volume.Initialize",
+                         value.target_uri)
+
+    def test_initialize(self):
+        self.volume_inst.initialize(init_type="Fast")
+        self.volume_inst._conn.post.assert_called_once_with(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1/Actions/'
+            'Volume.Initialize',
+            data={"InitializeType": "Fast"})
+
+        self.volume_inst._conn.post.reset_mock()
+        self.volume_inst.initialize(init_type="Slow")
+        self.volume_inst._conn.post.assert_called_once_with(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1/Actions/'
+            'Volume.Initialize',
+            data={"InitializeType": "Slow"})
+
+    def test_initialize_with_invalid_parameter(self):
+        with self.assertRaisesRegexp(
+            exceptions.InvalidParameterValueError,
+            'The parameter "init_type" value "fake-value" is invalid'
+                '.*[\'Fast\', \'Slow\']'):
+            self.volume_inst.initialize(init_type="fake-value")
 
     def test_delete(self):
         self.volume_inst.delete()
