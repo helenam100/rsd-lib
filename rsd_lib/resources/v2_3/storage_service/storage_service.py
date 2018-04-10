@@ -15,7 +15,11 @@
 
 import logging
 
+from sushy import exceptions
 from sushy.resources import base
+
+from rsd_lib.resources.v2_3.storage_service import volume
+from rsd_lib import utils
 
 LOG = logging.getLogger(__name__)
 
@@ -40,6 +44,8 @@ class StorageService(base.ResourceBase):
     status = StatusField('Status')
     """The storage service status"""
 
+    _volumes = None  # ref to Volumes instance
+
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a StorageService
 
@@ -50,6 +56,32 @@ class StorageService(base.ResourceBase):
         """
         super(StorageService, self).__init__(connector, identity,
                                              redfish_version)
+
+    def _get_volume_collection_path(self):
+        """Helper function to find the VolumeCollection path"""
+        volume_col = self.json.get('Volumes')
+        if not volume_col:
+            raise exceptions.MissingAttributeError(attribute='Volumes',
+                                                   resource=self._path)
+        return utils.get_resource_identity(volume_col)
+
+    @property
+    def volumes(self):
+        """Property to provide reference to `VolumeCollection` instance
+
+        It is calculated once when it is queried for the first time. On
+        refresh, this property is reset.
+        """
+        if self._volumes is None:
+            self._volumes = volume.VolumeCollection(
+                self._conn, self._get_volume_collection_path(),
+                redfish_version=self.redfish_version)
+
+        return self._volumes
+
+    def refresh(self):
+        super(StorageService, self).refresh()
+        self._volumes = None
 
 
 class StorageServiceCollection(base.ResourceCollectionBase):
