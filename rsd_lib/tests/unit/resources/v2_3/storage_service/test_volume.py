@@ -70,3 +70,43 @@ class StorageServiceTestCase(testtools.TestCase):
         self.assertEqual(False, self.volume_inst.bootable)
         self.assertEqual(None, self.volume_inst.erased)
         self.assertEqual(True, self.volume_inst.erase_on_detach)
+
+
+class VolumeCollectionTestCase(testtools.TestCase):
+
+    def setUp(self):
+        super(VolumeCollectionTestCase, self).setUp()
+        self.conn = mock.Mock()
+        with open('rsd_lib/tests/unit/json_samples/v2_3/'
+                  'volume_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.volume_col = volume.VolumeCollection(
+            self.conn, '/redfish/v1/StorageServices/NVMeoE1/Volumes',
+            redfish_version='1.0.2')
+
+    def test__parse_attributes(self):
+        self.volume_col._parse_attributes()
+        self.assertEqual('1.0.2', self.volume_col.redfish_version)
+        self.assertEqual('Volume Collection',
+                         self.volume_col.name)
+        self.assertEqual(('/redfish/v1/StorageServices/NVMeoE1/Volumes/1',),
+                         self.volume_col.members_identities)
+
+    @mock.patch.object(volume, 'Volume', autospec=True)
+    def test_get_member(self, mock_volume):
+        self.volume_col.get_member(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1')
+        mock_volume.assert_called_once_with(
+            self.volume_col._conn,
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1',
+            redfish_version=self.volume_col.redfish_version)
+
+    @mock.patch.object(volume, 'Volume', autospec=True)
+    def test_get_members(self, mock_volume):
+        members = self.volume_col.get_members()
+        mock_volume.assert_called_once_with(
+            self.volume_col._conn,
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes/1',
+            redfish_version=self.volume_col.redfish_version)
+        self.assertIsInstance(members, list)
+        self.assertEqual(1, len(members))

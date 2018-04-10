@@ -112,3 +112,21 @@ class Volume(base.ResourceBase):
             the object according to schema of the given version.
         """
         super(Volume, self).__init__(connector, identity, redfish_version)
+
+
+class VolumeCollection(base.ResourceCollectionBase):
+
+    @property
+    def _resource_type(self):
+        return Volume
+
+    def __init__(self, connector, path, redfish_version=None):
+        """A class representing a ProcessorCollection
+
+        :param connector: A Connector instance
+        :param path: The canonical path to the Processor collection resource
+        :param redfish_version: The version of RedFish. Used to construct
+            the object according to schema of the given version.
+        """
+        super(VolumeCollection, self).__init__(connector, path,
+                                               redfish_version)

@@ -1,0 +1,13 @@
+{
+	"@odata.context": "/redfish/v1/$metadata#VolumeCollection.VolumeCollection",
+  	"@odata.id": "/redfish/v1/StorageServices/1/Volumes",
+  	"@odata.type": "#VolumeCollection.VolumeCollection",
+  	"Description": "Volume Collection",
+  	"Members": [
+    	{
+    		"@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Volumes/1"
+    	}
+    ],
+  	"Members@odata.count": 1,
+	"Name": "Volume Collection"
+}

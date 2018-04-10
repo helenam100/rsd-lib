@@ -55,7 +55,7 @@ class StorageServiceCollectionTestCase(testtools.TestCase):
                   'storage_service_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
         self.storage_service_col = storage_service.StorageServiceCollection(
-            self.conn, '/redfish/v1/Services', redfish_version='1.0.2')
+            self.conn, '/redfish/v1/StorageServices', redfish_version='1.0.2')
 
     def test__parse_attributes(self):
         self.storage_service_col._parse_attributes()
