@@ -107,6 +107,10 @@ class StorageServiceTestCase(testtools.TestCase):
             'The parameter "erased" value "fake-value" is invalid'):
             self.volume_inst.update(bootable=True, erased='fake-value')
 
+    def test_delete(self):
+        self.volume_inst.delete()
+        self.volume_inst._conn.delete.assert_called_once()
+
 
 class VolumeCollectionTestCase(testtools.TestCase):
 

@@ -143,6 +143,10 @@ class Volume(base.ResourceBase):
 
         self._conn.patch(self.path, data=data)
 
+    def delete(self):
+        """Delete this volume"""
+        self._conn.delete(self.path)
+
 
 class VolumeCollection(base.ResourceCollectionBase):
 
