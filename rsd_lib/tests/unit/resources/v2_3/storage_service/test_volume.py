@@ -14,12 +14,14 @@
 #    under the License.
 
 import json
+import jsonschema
 import mock
 import testtools
 
 from sushy import exceptions
 
 from rsd_lib.resources.v2_3.storage_service import volume
+from rsd_lib.tests.unit.fakes import request_fakes
 
 
 class StorageServiceTestCase(testtools.TestCase):
@@ -165,6 +167,10 @@ class VolumeCollectionTestCase(testtools.TestCase):
         with open('rsd_lib/tests/unit/json_samples/v2_3/'
                   'volume_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.conn.post.return_value = request_fakes.fake_request_post(
+            None, headers={"Location": "https://localhost:8443/redfish/v1/"
+                                       "StorageServices/NVMeoE1/Volumes/2"})
+
         self.volume_col = volume.VolumeCollection(
             self.conn, '/redfish/v1/StorageServices/NVMeoE1/Volumes',
             redfish_version='1.0.2')
@@ -195,3 +201,98 @@ class VolumeCollectionTestCase(testtools.TestCase):
             redfish_version=self.volume_col.redfish_version)
         self.assertIsInstance(members, list)
         self.assertEqual(1, len(members))
+
+    def test_create_volume(self):
+        reqs = {
+            "AccessCapabilities": [
+                "Read",
+                "Write"
+            ],
+            "CapacityBytes": 10737418240,
+            "CapacitySources": [
+                {
+                    "ProvidingPools": [
+                        {
+                            "@odata.id": "/redfish/v1/StorageServices/1/"
+                                         "StoragePools/2"
+                        }
+                    ]
+                }
+            ],
+            "ReplicaInfos": [
+                {
+                    "ReplicaType": "Clone",
+                    "Replica": {
+                        "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/"
+                                     "Volumes/1"
+                    }
+                }
+            ],
+            "Oem": {
+                "Intel_RackScale": {
+                    "Bootable": True
+                }
+            }
+        }
+        result = self.volume_col.create_volume(
+            capacity=10737418240,
+            access_capabilities=["Read", "Write"],
+            capacity_sources=[{
+                "ProvidingPools": [{
+                    "@odata.id": "/redfish/v1/StorageServices/1/StoragePools/2"
+                }]
+            }],
+            replica_infos=[{
+                "ReplicaType": "Clone",
+                "Replica": {
+                    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/"
+                                 "Volumes/1"
+                    }
+            }],
+            bootable=True)
+        self.volume_col._conn.post.assert_called_once_with(
+            '/redfish/v1/StorageServices/NVMeoE1/Volumes', data=reqs)
+        self.assertEqual(result,
+                         '/redfish/v1/StorageServices/NVMeoE1/Volumes/2')
+
+    def test_create_volume_with_invalid_reqs(self):
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.volume_col.create_volume,
+                          capacity='invalid_capacity')
+
+        result = self.volume_col.create_volume(capacity=1024)
+        self.assertEqual(result,
+                         '/redfish/v1/StorageServices/NVMeoE1/Volumes/2')
+
+        invalid_access_capabilities = ["Write", "invalid"]
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.volume_col.create_volume,
+                          capacity=1024,
+                          access_capabilities=invalid_access_capabilities)
+
+        invalid_capacity_sources = [{
+            "ProvidingPools": {
+                "@odata.id": "/redfish/v1/StorageServices/1/StoragePools/2"
+            }
+        }]
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.volume_col.create_volume,
+                          capacity=1024,
+                          capacity_sources=invalid_capacity_sources)
+
+        invalid_replica_infos = [{
+            "Invalid": "Clone",
+            "Replica": {
+                "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/"
+                             "Volumes/1"
+            }
+        }]
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.volume_col.create_volume,
+                          capacity=1024,
+                          replica_infos=invalid_replica_infos)
+
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.volume_col.create_volume,
+                          capacity=1024,
+                          bootable="True")
