@@ -13,12 +13,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import jsonschema
 import logging
 
 from sushy import exceptions
 from sushy.resources import base
 from sushy import utils
 
+from rsd_lib.resources.v2_3.storage_service import volume_schemas
 from rsd_lib import utils as rsd_lib_utils
 
 LOG = logging.getLogger(__name__)
@@ -207,3 +209,57 @@ class VolumeCollection(base.ResourceCollectionBase):
         """
         super(VolumeCollection, self).__init__(connector, path,
                                                redfish_version)
+
+    def _create_volume_request(self, capacity, access_capabilities=None,
+                               capacity_sources=None, replica_infos=None,
+                               bootable=None):
+
+        request = {}
+
+        jsonschema.validate(capacity,
+                            volume_schemas.capacity_req_schema)
+        request['CapacityBytes'] = capacity
+
+        if access_capabilities is not None:
+            jsonschema.validate(
+                access_capabilities,
+                volume_schemas.access_capabilities_req_schema)
+            request['AccessCapabilities'] = access_capabilities
+
+        if capacity_sources is not None:
+            jsonschema.validate(capacity_sources,
+                                volume_schemas.capacity_sources_req_schema)
+            request['CapacitySources'] = capacity_sources
+
+        if replica_infos is not None:
+            jsonschema.validate(replica_infos,
+                                volume_schemas.replica_infos_req_schema)
+            request['ReplicaInfos'] = replica_infos
+
+        if bootable is not None:
+            jsonschema.validate(bootable,
+                                volume_schemas.bootable_req_schema)
+            request['Oem'] = {"Intel_RackScale": {"Bootable": bootable}}
+
+        return request
+
+    def create_volume(self, capacity, access_capabilities=None,
+                      capacity_sources=None, replica_infos=None,
+                      bootable=None):
+        """Compose a node from RackScale hardware
+
+        :param capacity: Requested volume capacity in bytes
+        :param access_capabilities: List of volume access capabilities
+        :param capacity_sources: JSON for volume providing source
+        :param replica_infos: JSON for volume replica infos
+        :param bootable: Determines if the volume should be bootable
+        :returns: The uri of the new volume
+        """
+        properties = self._create_volume_request(
+            capacity=capacity, access_capabilities=access_capabilities,
+            capacity_sources=capacity_sources, replica_infos=replica_infos,
+            bootable=bootable)
+        resp = self._conn.post(self._path, data=properties)
+        LOG.info("Volume created at %s", resp.headers['Location'])
+        volume_url = resp.headers['Location']
+        return volume_url[volume_url.find(self._path):]
