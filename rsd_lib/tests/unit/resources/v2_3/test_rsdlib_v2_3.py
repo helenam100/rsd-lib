@@ -19,6 +19,7 @@ import testtools
 
 from rsd_lib.resources.v2_1.chassis import chassis as v2_1_chassis
 from rsd_lib.resources.v2_1.fabric import fabric as v2_1_fabric
+from rsd_lib.resources.v2_1.manager import manager as v2_1_manager
 from rsd_lib.resources.v2_1.node import node as v2_1_node
 from rsd_lib.resources.v2_2.system import system as v2_2_system
 from rsd_lib.resources import v2_3
@@ -119,6 +120,21 @@ class RSDLibV2_3TestCase(testtools.TestCase):
         mock_storage_service.assert_called_once_with(
             self.rsd._conn, 'fake-storage-service-id',
             redfish_version=self.rsd.redfish_version)
+
+    @mock.patch.object(v2_1_manager, 'ManagerCollection', autospec=True)
+    def test_get_manager_collection(self, mock_manager_collection):
+        self.rsd.get_manager_collection()
+        mock_manager_collection.assert_called_once_with(
+            self.rsd._conn, '/redfish/v1/Managers',
+            redfish_version=self.rsd.redfish_version)
+
+    @mock.patch.object(v2_1_manager, 'Manager', autospec=True)
+    def test_get_manager(self, mock_manager_service):
+        self.rsd.get_manager('fake-manager-id')
+        mock_manager_service.assert_called_once_with(
+            self.rsd._conn, 'fake-manager-id',
+            redfish_version=self.rsd.redfish_version
+        )
 
     # @mock.patch.object(v2_2_telemetry, 'Telemetry', autospec=True)
     # def test_get_telemetry_service(self, mock_telemetry_service):
