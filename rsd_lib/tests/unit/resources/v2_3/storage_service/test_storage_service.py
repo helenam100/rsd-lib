@@ -19,6 +19,7 @@ import testtools
 
 from sushy import exceptions
 
+from rsd_lib.resources.v2_3.storage_service import storage_pool
 from rsd_lib.resources.v2_3.storage_service import storage_service
 from rsd_lib.resources.v2_3.storage_service import volume
 
@@ -107,6 +108,66 @@ class StorageServiceTestCase(testtools.TestCase):
         # | WHEN & THEN |
         self.assertIsInstance(self.storage_service_inst.volumes,
                               volume.VolumeCollection)
+
+    def test__get_storage_pool_collection_path(self):
+        expected = '/redfish/v1/StorageServices/1/StoragePools'
+        result = self.storage_service_inst._get_storage_pool_collection_path()
+        self.assertEqual(expected, result)
+
+    def test__get_storage_pool_collection_path_missing_processors_attr(self):
+        self.storage_service_inst._json.pop('StoragePools')
+        self.assertRaisesRegex(
+            exceptions.MissingAttributeError, 'attribute StoragePools',
+            self.storage_service_inst._get_storage_pool_collection_path)
+
+    def test_storage_pools(self):
+        # check for the underneath variable value
+        self.assertIsNone(self.storage_service_inst._storage_pools)
+        # | GIVEN |
+        self.conn.get.return_value.json.reset_mock()
+        with open('rsd_lib/tests/unit/json_samples/v2_3/'
+                  'storage_pool_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN |
+        actual_storage_pools = self.storage_service_inst.storage_pools
+        # | THEN |
+        self.assertIsInstance(actual_storage_pools,
+                              storage_pool.StoragePoolCollection)
+        self.conn.get.return_value.json.assert_called_once_with()
+
+        # reset mock
+        self.conn.get.return_value.json.reset_mock()
+        # | WHEN & THEN |
+        # tests for same object on invoking subsequently
+        self.assertIs(actual_storage_pools,
+                      self.storage_service_inst.storage_pools)
+        self.conn.get.return_value.json.assert_not_called()
+
+    def test_storage_pools_on_refresh(self):
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/v2_3/'
+                  'storage_pool_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.storage_service_inst.storage_pools,
+                              storage_pool.StoragePoolCollection)
+
+        # On refreshing the storage service instance...
+        with open('rsd_lib/tests/unit/json_samples/v2_3/'
+                  'storage_service.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        self.storage_service_inst.refresh()
+
+        # | WHEN & THEN |
+        self.assertIsNone(self.storage_service_inst._storage_pools)
+
+        # | GIVEN |
+        with open('rsd_lib/tests/unit/json_samples/v2_3/'
+                  'storage_pool_collection.json', 'r') as f:
+            self.conn.get.return_value.json.return_value = json.loads(f.read())
+        # | WHEN & THEN |
+        self.assertIsInstance(self.storage_service_inst.storage_pools,
+                              storage_pool.StoragePoolCollection)
 
 
 class StorageServiceCollectionTestCase(testtools.TestCase):
