@@ -1,0 +1,16 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StoragePools",
+    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/StoragePools",
+    "@odata.type": "#StoragePoolCollection.StoragePoolCollection",
+    "Description": "Collection of Storage Pools",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/StoragePools/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/StoragePools/2"
+        }
+    ],
+    "Members@odata.count": 2,
+    "Name": "StoragePools Collection"
+}

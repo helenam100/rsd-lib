@@ -200,10 +200,10 @@ class VolumeCollection(base.ResourceCollectionBase):
         return Volume
 
     def __init__(self, connector, path, redfish_version=None):
-        """A class representing a ProcessorCollection
+        """A class representing a VolumeCollection
 
         :param connector: A Connector instance
-        :param path: The canonical path to the Processor collection resource
+        :param path: The canonical path to the Volume collection resource
         :param redfish_version: The version of RedFish. Used to construct
             the object according to schema of the given version.
         """

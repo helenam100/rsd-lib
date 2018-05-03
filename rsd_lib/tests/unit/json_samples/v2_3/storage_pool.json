@@ -1,0 +1,37 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StoragePool.StoragePool",
+    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/StoragePools/2",
+    "@odata.type": "#StoragePool.v1_0_0.StoragePool",
+    "Description": "Base storage pool",
+    "Id": "2",
+    "Name": "BasePool",
+    "AllocatedVolumes": {
+        "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/StoragePools/2/AllocatedVolumes"
+    },
+    "AllocatedPools": {
+        "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/StoragePools/2/AllocatedPools"
+    },
+    "Capacity": {
+        "Data": {
+            "AllocatedBytes": 512174850048,
+            "ConsumedBytes": 3071983104
+        }
+    },
+    "CapacitySources": [{
+        "ProvidingDrives": [{
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/2"
+        }],
+        "ProvidedCapacity": {
+            "Data": {
+                "AllocatedBytes": 512174850048,
+                "ConsumedBytes": 3071983104
+            }
+        }
+    }],
+    "Oem": {},
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    }
+}
