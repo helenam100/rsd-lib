@@ -45,6 +45,11 @@ class CapacitySourcesField(base.ListField):
     provided_capacity = CapacityField('ProvidedCapacity')
 
 
+class IdentifiersField(base.ListField):
+    durable_name = base.Field('DurableName')
+    durable_name_format = base.Field('DurableNameFormat')
+
+
 class StoragePool(base.ResourceBase):
 
     identity = base.Field('Id', required=True)
@@ -64,6 +69,9 @@ class StoragePool(base.ResourceBase):
 
     capacity_sources = CapacitySourcesField('CapacitySources')
     """The storage pool capacity source info"""
+
+    identifiers = IdentifiersField('Identifiers')
+    """These identifiers list of this volume"""
 
     _allocated_volumes = None  # ref to allocated volumes collection
 
