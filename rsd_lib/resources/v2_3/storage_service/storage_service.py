@@ -18,6 +18,7 @@ import logging
 from sushy import exceptions
 from sushy.resources import base
 
+from rsd_lib.resources.v2_3.storage_service import drive
 from rsd_lib.resources.v2_3.storage_service import storage_pool
 from rsd_lib.resources.v2_3.storage_service import volume
 from rsd_lib import utils
@@ -45,9 +46,11 @@ class StorageService(base.ResourceBase):
     status = StatusField('Status')
     """The storage service status"""
 
-    _volumes = None  # ref to Volumes instance
+    _volumes = None  # ref to Volumes collection
 
-    _storage_pools = None  # ref to StoragePools instance
+    _storage_pools = None  # ref to StoragePool collection
+
+    _drives = None  # ref to Drive collection
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a StorageService
@@ -83,7 +86,7 @@ class StorageService(base.ResourceBase):
         return self._volumes
 
     def _get_storage_pool_collection_path(self):
-        """Helper function to find the StoragePoolsCollection path"""
+        """Helper function to find the StoragePoolCollection path"""
         storage_pool_col = self.json.get('StoragePools')
         if not storage_pool_col:
             raise exceptions.MissingAttributeError(attribute='StoragePools',
@@ -92,7 +95,7 @@ class StorageService(base.ResourceBase):
 
     @property
     def storage_pools(self):
-        """Property to provide reference to `StoragePoolsCollection` instance
+        """Property to provide reference to `StoragePoolCollection` instance
 
         It is calculated once when it is queried for the first time. On
         refresh, this property is reset.
@@ -104,10 +107,33 @@ class StorageService(base.ResourceBase):
 
         return self._storage_pools
 
+    def _get_drive_collection_path(self):
+        """Helper function to find the DriveCollection path"""
+        drive_col = self.json.get('Drives')
+        if not drive_col:
+            raise exceptions.MissingAttributeError(attribute='Drives',
+                                                   resource=self._path)
+        return utils.get_resource_identity(drive_col)
+
+    @property
+    def drives(self):
+        """Property to provide reference to `DriveCollection` instance
+
+        It is calculated once when it is queried for the first time. On
+        refresh, this property is reset.
+        """
+        if self._drives is None:
+            self._drives = drive.DriveCollection(
+                self._conn, self._get_drive_collection_path(),
+                redfish_version=self.redfish_version)
+
+        return self._drives
+
     def refresh(self):
         super(StorageService, self).refresh()
         self._volumes = None
         self._storage_pools = None
+        self._drives = None
 
 
 class StorageServiceCollection(base.ResourceCollectionBase):
