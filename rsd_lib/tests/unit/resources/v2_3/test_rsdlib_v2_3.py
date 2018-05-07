@@ -18,11 +18,11 @@ import mock
 import testtools
 
 from rsd_lib.resources.v2_1.chassis import chassis as v2_1_chassis
-from rsd_lib.resources.v2_1.fabric import fabric as v2_1_fabric
 from rsd_lib.resources.v2_1.manager import manager as v2_1_manager
 from rsd_lib.resources.v2_1.node import node as v2_1_node
 from rsd_lib.resources.v2_2.system import system as v2_2_system
 from rsd_lib.resources import v2_3
+from rsd_lib.resources.v2_3.fabric import fabric as v2_3_fabric
 from rsd_lib.resources.v2_3.node import node as v2_3_node
 from rsd_lib.resources.v2_3.storage_service import storage_service \
     as v2_3_storage_service
@@ -77,14 +77,14 @@ class RSDLibV2_3TestCase(testtools.TestCase):
             self.rsd._conn, 'fake-node-id',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(v2_1_fabric, 'FabricCollection', autospec=True)
+    @mock.patch.object(v2_3_fabric, 'FabricCollection', autospec=True)
     def test_get_fabric_collection(self, mock_fabric_collection):
         self.rsd.get_fabric_collection()
         mock_fabric_collection.assert_called_once_with(
             self.rsd._conn, '/redfish/v1/Fabrics',
             redfish_version=self.rsd.redfish_version)
 
-    @mock.patch.object(v2_1_fabric, 'Fabric', autospec=True)
+    @mock.patch.object(v2_3_fabric, 'Fabric', autospec=True)
     def test_get_fabric(self, mock_fabric):
         self.rsd.get_fabric('fake-fabric-id')
         mock_fabric.assert_called_once_with(

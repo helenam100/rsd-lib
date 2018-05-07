@@ -1,0 +1,25 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Fabric.Fabric",
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoE",
+    "@odata.type": "#Fabric.v1_0_0.Fabric",
+    "Id": "NVMeoE",
+    "Actions": {
+        "Oem": null
+    },
+    "Zones": {
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Zones"
+    },
+    "Endpoints": {
+        "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints"
+    },
+    "FabricType": "NVMeOverFabrics",
+    "Links": {
+        "Oem": {}
+    },
+    "Oem": {},
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    }
+}

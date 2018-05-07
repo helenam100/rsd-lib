@@ -16,6 +16,7 @@
 from sushy.resources import base
 
 from rsd_lib.resources import v2_2
+from rsd_lib.resources.v2_3.fabric import fabric
 from rsd_lib.resources.v2_3.node import node
 from rsd_lib.resources.v2_3.storage_service import storage_service
 
@@ -59,3 +60,24 @@ class RSDLibV2_3(v2_2.RSDLibV2_2):
         return storage_service.StorageService(
             self._conn, identity,
             redfish_version=self.redfish_version)
+
+    def get_fabric_collection(self):
+        """Get the FabricCollection object
+
+        :raises: MissingAttributeError, if the collection attribute is
+            not found
+        :returns: a FabricCollection object
+        """
+        return fabric.FabricCollection(self._conn,
+                                       self._fabrics_path,
+                                       redfish_version=self.redfish_version)
+
+    def get_fabric(self, identity):
+        """Given the identity return a Fabric object
+
+        :param identity: The identity of the Fabric resource
+        :returns: The Fabric object
+        """
+        return fabric.Fabric(self._conn,
+                             identity,
+                             redfish_version=self.redfish_version)
