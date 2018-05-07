@@ -1,0 +1,68 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Drive.Drive",
+    "@odata.id": "/redfish/v1/Chassis/1/Drives/2",
+    "@odata.type": "#Drive.v1_2_0.Drive",
+    "Name": "Physical Drive",
+    "Id": "2",
+    "Protocol": "NVMe",
+    "Type": "NVMe",
+    "MediaType": "SSD",
+    "CapacityBytes": 2442408680913,
+    "Manufacturer": "Intel Corporation",
+    "Model": "E323",
+    "Revision": null,
+    "SKU": null,
+    "SerialNumber": "123fed3029c-b23394-121",
+    "PartNumber": null,
+    "AssetTag": null,
+    "RotationSpeedRPM": null,
+    "Identifiers": [
+        {
+            "DurableName": "397f9b78-7e94-11e7-9ea4-001e67dfa170",
+            "DurableNameFormat": "UUID"
+        }
+    ],
+    "Location": [
+        {
+            "Info": "3",
+            "InfoFormat": "DriveBay number"
+        }
+    ],
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    },
+    "Oem": {
+        "Intel_RackScale": {
+            "odata.type": "Intel.Oem.Drive",
+            "EraseOnDetach": true,
+            "DriveErased": false,
+            "FirmwareVersion": "1.0",
+            "Storage": null,
+            "PCIeFunction": null,
+            "UsedBy": [
+                {
+                    "@odata.id": "/redfish/v1/StorageServices/1/StoragePools/2"
+                }
+            ]
+        }
+    },
+    "Links": {
+        "odata.type": "Drive.v1_2_0.Links",
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/1"
+        },
+        "Oem": {},
+        "Volumes": [],
+        "Endpoints": []
+    },
+    "StatusIndicator": null,
+    "IndicatorLED": null,
+    "CapableSpeedGbs": null,
+    "NegotiatedSpeedGbs": null,
+    "PredictedMediaLifeLeftPercent": 95,
+    "Actions": {
+        "Oem": {}
+    }
+}

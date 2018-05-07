@@ -125,10 +125,10 @@ class Volume(base.ResourceBase):
     _actions = VolumeActionsField('Actions', required=True)
 
     def __init__(self, connector, identity, redfish_version=None):
-        """A class representing a LogicalDrive
+        """A class representing a Volume
 
         :param connector: A Connector instance
-        :param identity: The identity of the LogicalDrive resource
+        :param identity: The identity of the Volume resource
         :param redfish_version: The version of RedFish. Used to construct
             the object according to schema of the given version.
         """

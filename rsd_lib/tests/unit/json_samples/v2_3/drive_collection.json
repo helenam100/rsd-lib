@@ -1,0 +1,15 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#DriveCollection.DriveCollection",
+    "@odata.id": "/redfish/v1/StorageServices/NVMeoE1/Drives",
+    "@odata.type": "#DriveCollection.v1_0_0.DriveCollection",
+    "Name": "Drives",
+    "Members@odata.count": 2,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/2"
+        }
+    ]
+}
