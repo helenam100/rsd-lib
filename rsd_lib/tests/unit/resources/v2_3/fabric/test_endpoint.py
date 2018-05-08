@@ -14,7 +14,6 @@
 #    under the License.
 
 import json
-
 import mock
 import testtools
 
@@ -117,6 +116,55 @@ class EndpointTestCase(testtools.TestCase):
             None, self.endpoint_inst.ip_transport_details[0].ipv6_address)
         self.assertEqual(4791, self.endpoint_inst.ip_transport_details[0].port)
         self.assertEqual(None, self.endpoint_inst.oem.authentication)
+
+    def test_update_authentication(self):
+        self.endpoint_inst.update_authentication(username='fake-username')
+        self.endpoint_inst._conn.patch.assert_called_once_with(
+            '/redfish/v1/Fabrics/NVMeoE/Endpoints/1',
+            data={
+                "Oem": {
+                    "Intel_RackScale": {
+                        "@odata.type": "#Intel.Oem.Endpoint",
+                        "Authentication": {"Username": "fake-username"}
+                    }
+                }
+            })
+
+        self.endpoint_inst._conn.patch.reset_mock()
+        self.endpoint_inst.update_authentication(password='fake-password')
+        self.endpoint_inst._conn.patch.assert_called_once_with(
+            '/redfish/v1/Fabrics/NVMeoE/Endpoints/1',
+            data={
+                "Oem": {
+                    "Intel_RackScale": {
+                        "@odata.type": "#Intel.Oem.Endpoint",
+                        "Authentication": {"Password": "fake-password"}
+                    }
+                }
+            })
+
+        self.endpoint_inst._conn.patch.reset_mock()
+        self.endpoint_inst.update_authentication(username='fake-username',
+                                                 password='fake-password')
+        self.endpoint_inst._conn.patch.assert_called_once_with(
+            '/redfish/v1/Fabrics/NVMeoE/Endpoints/1',
+            data={
+                "Oem": {
+                    "Intel_RackScale": {
+                        "@odata.type": "#Intel.Oem.Endpoint",
+                        "Authentication": {
+                            "Username": "fake-username",
+                            "Password": "fake-password"
+                        }
+                    }
+                }
+            })
+
+    def test_update_authentication_with_invalid_parameter(self):
+        with self.assertRaisesRegexp(
+            ValueError,
+            'At least "username" or "password" parameter has to be specified'):
+            self.endpoint_inst.update_authentication()
 
 
 class EndpointCollectionTestCase(testtools.TestCase):

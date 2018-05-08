@@ -110,6 +110,35 @@ class Endpoint(base.ResourceBase):
         super(Endpoint, self).__init__(connector, identity,
                                        redfish_version)
 
+    def update_authentication(self, username=None, password=None):
+        """Update endpoint authentication
+
+        :param username: an endpoint username used to authenticate it on the
+                         other side of a communication channel
+        :param password: an endpoint password
+        :raises: BadRequestError if at least one param isn't specified
+        """
+        if username is None and password is None:
+            raise ValueError('At least "username" or "password" parameter has '
+                             'to be specified')
+
+        data = {
+            "Oem": {
+                "Intel_RackScale": {
+                    "@odata.type": "#Intel.Oem.Endpoint",
+                    "Authentication": {}
+                }
+            }
+        }
+        if username is not None:
+            data['Oem']['Intel_RackScale']['Authentication']['Username'] = \
+                username
+        if password is not None:
+            data['Oem']['Intel_RackScale']['Authentication']['Password'] = \
+                password
+
+        self._conn.patch(self.path, data=data)
+
 
 class EndpointCollection(base.ResourceCollectionBase):
 
