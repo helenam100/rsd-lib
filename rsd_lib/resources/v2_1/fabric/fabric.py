@@ -20,6 +20,7 @@ from sushy.resources import base
 
 from rsd_lib.resources.v2_1.fabric import endpoint
 from rsd_lib.resources.v2_1.fabric import zone
+from rsd_lib import utils as rsd_lib_utils
 
 LOG = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ class Fabric(base.ResourceBase):
         if not endpoint_col:
             raise exceptions.MissingAttributeError(attribute='Endpoints',
                                                    resource=self._path)
-        return endpoint_col.get('@odata.id')
+        return rsd_lib_utils.get_resource_identity(endpoint_col)
 
     @property
     def endpoints(self):
@@ -91,7 +92,7 @@ class Fabric(base.ResourceBase):
         if not zone_col:
             raise exceptions.MissingAttributeError(attribute='Zones',
                                                    resource=self._path)
-        return zone_col.get('@odata.id')
+        return rsd_lib_utils.get_resource_identity(zone_col)
 
     @property
     def zones(self):

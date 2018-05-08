@@ -50,6 +50,11 @@ class FabricTestCase(testtools.TestCase):
         self.assertIsNone(self.fabric_inst._endpoints)
         self.assertIsNone(self.fabric_inst._zones)
 
+    def test__get_endpoint_collection_path(self):
+        expected = '/redfish/v1/Fabrics/PCIe/Endpoints'
+        result = self.fabric_inst._get_endpoint_collection_path()
+        self.assertEqual(expected, result)
+
     def test__get_endpoint_collection_path_missing_attr(self):
         self.fabric_inst._json.pop('Endpoints')
         self.assertRaisesRegex(
