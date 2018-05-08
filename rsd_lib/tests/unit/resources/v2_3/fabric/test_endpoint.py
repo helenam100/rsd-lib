@@ -13,11 +13,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import copy
 import json
+import jsonschema
 import mock
 import testtools
 
 from rsd_lib.resources.v2_3.fabric import endpoint
+from rsd_lib.tests.unit.fakes import request_fakes
 
 
 class EndpointTestCase(testtools.TestCase):
@@ -175,8 +178,13 @@ class EndpointCollectionTestCase(testtools.TestCase):
         with open('rsd_lib/tests/unit/json_samples/v2_3/'
                   'endpoint_collection.json', 'r') as f:
             self.conn.get.return_value.json.return_value = json.loads(f.read())
+
+        self.conn.post.return_value = request_fakes.fake_request_post(
+            None, headers={"Location": "https://localhost:8443/redfish/v1/"
+                                       "Fabrics/NVMeoE/Endpoints/3"})
+
         self.endpoint_col = endpoint.EndpointCollection(
-            self.conn, '/redfish/v1/Fabrics/PCIe/Endpoints',
+            self.conn, '/redfish/v1/Fabrics/NVMeoE/Endpoints',
             redfish_version='1.0.2')
 
     def test__parse_attributes(self):
@@ -211,3 +219,242 @@ class EndpointCollectionTestCase(testtools.TestCase):
         mock_endpoint.assert_has_calls(calls)
         self.assertIsInstance(members, list)
         self.assertEqual(2, len(members))
+
+    def test_create_endpoint(self):
+        reqs = {
+            "EndpointProtocol": "NVMeOverFabrics",
+            "Identifiers": [
+                {
+                    "DurableNameFormat": "NQN",
+                    "DurableName": "nqn.2014-08.org.nvmexpress:NVMf:"
+                                   "uuid:397f9b78-7e94-11e7-9ea4-001e67dfa170"
+                }
+            ],
+            "ConnectedEntities": [
+                {
+                    "EntityLink": {
+                        "@odata.id": "/redfish/v1/StorageServices/1/Volumes/1"
+                    },
+                    "EntityRole": "Target"
+                }
+            ],
+            "Links": {
+                "Oem": {
+                    "Intel_RackScale": {
+                        "Interfaces": [
+                            {
+                                "@odata.id": "/redfish/v1/Systems/Target/"
+                                             "EthernetInterfaces/1"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        result = self.endpoint_col.create_endpoint(
+            identifiers=[
+                {
+                    "DurableNameFormat": "NQN",
+                    "DurableName": "nqn.2014-08.org.nvmexpress:NVMf:"
+                                   "uuid:397f9b78-7e94-11e7-9ea4-001e67dfa170"
+                }
+            ],
+            connected_entities=[
+                {
+                    "EntityLink": {
+                        "@odata.id": "/redfish/v1/StorageServices/1/Volumes/1"
+                    },
+                    "EntityRole": "Target"
+                }
+            ],
+            protocol="NVMeOverFabrics",
+            interface="/redfish/v1/Systems/Target/EthernetInterfaces/1")
+        self.endpoint_col._conn.post.assert_called_once_with(
+            '/redfish/v1/Fabrics/NVMeoE/Endpoints', data=reqs)
+        self.assertEqual(result,
+                         '/redfish/v1/Fabrics/NVMeoE/Endpoints/3')
+
+        self.endpoint_col._conn.post.reset_mock()
+        reqs = {
+            "EndpointProtocol": "iSCSI",
+            "Identifiers": [
+                {
+                    "DurableNameFormat": "iQN",
+                    "DurableName": "iqn.1986-03.com.intel:my_storage-uuid:"
+                                   "397f9b78-7e94-11e7-9ea4-001e67dfa170"
+                }
+            ],
+            "ConnectedEntities": [
+                {
+                    "EntityLink": {
+                        "@odata.id": "/redfish/v1/StorageServices/1/Volumes/1"
+                    },
+                    "EntityRole": "Target",
+                    "Identifiers": [
+                        {
+                            "DurableNameFormat": "LUN",
+                            "DurableName": "1"
+                        }
+                    ]
+                }
+            ],
+            "Oem": {
+                "Intel_RackScale": {
+                    "Authentication": {
+                        "Username": "userA",
+                        "Password": "passB"
+                    }
+                }
+            }
+        }
+        result = self.endpoint_col.create_endpoint(
+            identifiers=[
+                {
+                    "DurableNameFormat": "iQN",
+                    "DurableName": "iqn.1986-03.com.intel:my_storage-uuid:"
+                                   "397f9b78-7e94-11e7-9ea4-001e67dfa170"
+                }
+            ],
+            connected_entities=[
+                {
+                    "EntityLink": {
+                        "@odata.id": "/redfish/v1/StorageServices/1/Volumes/1"
+                    },
+                    "EntityRole": "Target",
+                    "Identifiers": [
+                        {
+                            "DurableNameFormat": "LUN",
+                            "DurableName": "1"
+                        }
+                    ]
+                }
+            ],
+            protocol="iSCSI",
+            authentication={
+                "Username": "userA",
+                "Password": "passB"
+            })
+        self.endpoint_col._conn.post.assert_called_once_with(
+            '/redfish/v1/Fabrics/NVMeoE/Endpoints', data=reqs)
+        self.assertEqual(result,
+                         '/redfish/v1/Fabrics/NVMeoE/Endpoints/3')
+
+    def test_create_endpoint_with_invalid_reqs(self):
+        identifiers = [
+            {
+                "DurableNameFormat": "iQN",
+                "DurableName": "iqn.1986-03.com.intel:my_storage-uuid:"
+                               "397f9b78-7e94-11e7-9ea4-001e67dfa170"
+            }
+        ]
+        connected_entities = [
+            {
+                "EntityLink": {
+                    "@odata.id": "/redfish/v1/StorageServices/1/Volumes/1"
+                },
+                "EntityRole": "Target",
+                "Identifiers": [
+                    {
+                        "DurableNameFormat": "LUN",
+                        "DurableName": "1"
+                    }
+                ]
+            }
+        ]
+
+        result = self.endpoint_col.create_endpoint(
+            identifiers=identifiers, connected_entities=connected_entities)
+        self.assertEqual(result,
+                         '/redfish/v1/Fabrics/NVMeoE/Endpoints/3')
+
+        # Test invalid identifiers argument
+        invalid_identifiers = copy.deepcopy(identifiers)
+        invalid_identifiers[0]['DurableNameFormat'] = 'fake-format'
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=invalid_identifiers,
+                          connected_entities=connected_entities)
+
+        invalid_identifiers = copy.deepcopy(identifiers)
+        invalid_identifiers[0].pop('DurableNameFormat')
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=invalid_identifiers,
+                          connected_entities=connected_entities)
+
+        invalid_identifiers = copy.deepcopy(identifiers)
+        invalid_identifiers[0].pop('DurableName')
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=invalid_identifiers,
+                          connected_entities=connected_entities)
+
+        invalid_identifiers = copy.deepcopy(identifiers)
+        invalid_identifiers[0]['invalid_key'] = 'invalid_value'
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=invalid_identifiers,
+                          connected_entities=connected_entities)
+
+        # Test invalid connected_entities argument
+        invalid_connected_entities = copy.deepcopy(connected_entities)
+        invalid_connected_entities[0]['EntityRole'] = 'fake-format'
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=invalid_connected_entities)
+
+        invalid_connected_entities = copy.deepcopy(connected_entities)
+        invalid_connected_entities[0]['EntityLink'].pop('@odata.id')
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=invalid_connected_entities)
+
+        invalid_connected_entities = copy.deepcopy(connected_entities)
+        invalid_connected_entities[0].pop('EntityLink')
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=invalid_connected_entities)
+
+        invalid_connected_entities = copy.deepcopy(connected_entities)
+        invalid_connected_entities[0].pop('EntityRole')
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=invalid_connected_entities)
+
+        invalid_connected_entities = copy.deepcopy(connected_entities)
+        invalid_connected_entities[0]['invalid_key'] = 'invalid_value'
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=invalid_connected_entities)
+
+        # Test invalid protocol argument
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=connected_entities,
+                          protocol='invalid_potocol')
+
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=connected_entities,
+                          protocol=1)
+
+        # Test invalid interface argument
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=connected_entities,
+                          interface=1)
+
+        # Test invalid authentication argument
+        self.assertRaises(jsonschema.exceptions.ValidationError,
+                          self.endpoint_col.create_endpoint,
+                          identifiers=identifiers,
+                          connected_entities=connected_entities,
+                          authentication={'invalid_key': 'invalid_value'})

@@ -13,11 +13,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import jsonschema
 import logging
 
 from sushy.resources import base
 from sushy import utils
 
+from rsd_lib.resources.v2_3.fabric import endpoint_schemas
 from rsd_lib import utils as rsd_lib_utils
 
 
@@ -156,3 +158,76 @@ class EndpointCollection(base.ResourceCollectionBase):
         """
         super(EndpointCollection, self).__init__(connector, path,
                                                  redfish_version)
+
+    def _create_endpoint_request(self, identifiers, connected_entities,
+                                 protocol=None, ip_transport_details=None,
+                                 interface=None, authentication=None):
+
+        request = {}
+
+        jsonschema.validate(identifiers,
+                            endpoint_schemas.identifiers_req_schema)
+        request['Identifiers'] = identifiers
+
+        jsonschema.validate(connected_entities,
+                            endpoint_schemas.connected_entities_req_schema)
+        request['ConnectedEntities'] = connected_entities
+
+        if protocol is not None:
+            jsonschema.validate(protocol, endpoint_schemas.protocol_req_schema)
+            request['EndpointProtocol'] = protocol
+
+        if ip_transport_details is not None:
+            jsonschema.validate(
+                ip_transport_details,
+                endpoint_schemas.ip_transport_details_req_schema)
+            request['IPTransportDetails'] = ip_transport_details
+
+        if interface is not None:
+            jsonschema.validate(interface,
+                                endpoint_schemas.interface_req_schema)
+            request['Links'] = {
+                "Oem": {
+                    "Intel_RackScale": {
+                        "Interfaces": [
+                            {
+                                "@odata.id": interface
+                            }
+                        ]
+                    }
+                }
+            }
+
+        if authentication is not None:
+            jsonschema.validate(authentication,
+                                endpoint_schemas.authentication_req_schema)
+            request['Oem'] = {"Intel_RackScale":
+                              {"Authentication": authentication}}
+
+        return request
+
+    def create_endpoint(self, identifiers, connected_entities, protocol=None,
+                        ip_transport_details=None, interface=None,
+                        authentication=None):
+        """Create a new endpoint
+
+        :param identifiers: provides iQN or NQN of created entity
+        :param connected_entities: provides information about entities
+                                   connected to the endpoint
+        :param protocol: the protocol used by the endpoint
+        :param ip_transport_details: the transport used for accessing the
+                                     endpoint
+        :param interface: the interface that should be used for the endpoint
+                          connectivity
+        :param authentication: authentication data for target-initiator
+                               authentication. Currently supported only for the
+                               iSCSI protocol.
+        :returns: The uri of the new endpoint
+        """
+        properties = self._create_endpoint_request(
+            identifiers, connected_entities, protocol, ip_transport_details,
+            interface, authentication)
+        resp = self._conn.post(self._path, data=properties)
+        LOG.info("Endpoint created at %s", resp.headers['Location'])
+        endpoint_url = resp.headers['Location']
+        return endpoint_url[endpoint_url.find(self._path):]

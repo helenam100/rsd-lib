@@ -246,7 +246,7 @@ class VolumeCollection(base.ResourceCollectionBase):
     def create_volume(self, capacity, access_capabilities=None,
                       capacity_sources=None, replica_infos=None,
                       bootable=None):
-        """Compose a node from RackScale hardware
+        """Create a new volume
 
         :param capacity: Requested volume capacity in bytes
         :param access_capabilities: List of volume access capabilities
