@@ -1,0 +1,61 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Endpoint.Endpoint",
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints/2",
+    "@odata.type": "#Endpoint.v1_1_0.Endpoint",
+    "Name": "Fabric Endpoint",
+    "Id": "1",
+    "Description": "Fabric Initiator Endpoint",
+    "ConnectedEntities": [
+        {
+            "EntityLink": null,
+            "EntityRole": "Initiator"
+        }
+    ],
+    "EndpointProtocol": "NVMeOverFabrics",
+    "Identifiers": [
+        {
+            "DurableName": "nqn.2014-08.org.nvmexpress:NVMf:uuid:12345678-90ab-cdef-0000-000000000000",
+            "DurableNameFormat": "NQN"
+        },
+        {
+            "DurableName": "12345678-90ab-cdef-0000-000000000000",
+            "DurableNameFormat": "UUID"
+        }
+    ],
+    "Links": {
+        "Ports": [],
+        "Endpoints": [],
+        "Oem": {
+            "Intel_RackScale": {
+                "@odata.type": "#Intel.Oem.EndpointLinks",
+                "Zones": [
+                    {
+                        "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Zones/1"
+                    }
+                ],
+                "Interface": null
+            }
+        }
+    },
+    "IPTransportDetails": [
+        {
+            "TransportProtocol": "RoCEv2",
+            "IPv4Address": {
+                "Address": "192.168.0.10"
+            },
+            "IPv6Address": {},
+            "Port": 4791
+        }
+    ],
+    "Status": {
+        "Health": null,
+        "HealthRollup": null,
+        "State": null
+    },
+    "Oem": {
+        "Intel_RackScale": {
+            "@odata.type": "#Intel.Oem.Endpoint",
+            "Authentication": null
+        }
+    }
+}

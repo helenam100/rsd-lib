@@ -1,0 +1,65 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Endpoint.Endpoint",
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints/1",
+    "@odata.type": "#Endpoint.v1_1_0.Endpoint",
+    "ConnectedEntities": [
+        {
+            "EntityLink": {
+                "@odata.id": "/redfish/v1/StorageServices/1/Volumes/1"
+            },
+            "EntityRole": "Target"
+        }
+    ],
+    "Description": "Fabric Endpoint",
+    "EndpointProtocol": "NVMeOverFabrics",
+    "Id": "1",
+    "Identifiers": [
+        {
+            "DurableName": "nqn.2014-08.org.nvmexpress:NVMf:uuid:397f9b78-7e94-11e7-9ea4-001e67dfa170",
+            "DurableNameFormat": "NQN"
+        },
+        {
+            "DurableName": "397f9b78-7e94-11e7-9ea4-001e67dfa170",
+            "DurableNameFormat": "UUID"
+        }
+    ],
+    "Links": {
+        "Ports": [],
+        "Endpoints": [],
+        "Oem": {
+            "Intel_RackScale": {
+                "@odata.type": "#Intel.Oem.EndpointLinks",
+                "Zones": [
+                    {
+                        "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Zones/1"
+                    }
+                ],
+                "Interface": {
+                    "@odata.id": "/redfish/v1/Systems/Target/EthernetInterfaces/1"
+                }
+            }
+        }
+    },
+    "Name": "Fabric Endpoint",
+    "IPTransportDetails": [
+        {
+            "TransportProtocol": "RoCEv2",
+            "IPv4Address": {
+                "Address": "192.168.0.10"
+            },
+            "IPv6Address": {},
+            "Port": 1023
+        }
+    ],
+    "Status": {
+        "Health": "OK",
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    },
+    "Oem": {
+        "Intel_RackScale": {
+            "@odata.type": "#Intel.Oem.Endpoint",
+            "Authentication": null
+        }
+    }
+}

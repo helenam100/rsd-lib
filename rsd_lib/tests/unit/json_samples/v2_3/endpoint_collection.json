@@ -1,0 +1,16 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#EndpointCollection.EndpointCollection",
+    "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints",
+    "@odata.type": "#EndpointCollection.EndpointCollection",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Fabrics/NVMeoE/Endpoints/2"
+        }
+    ],
+    "Members@odata.count": 2,
+    "Name": "Endpoint Collection",
+    "Description": "Endpoint Collection"
+}

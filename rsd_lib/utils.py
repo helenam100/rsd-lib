@@ -15,4 +15,7 @@
 
 
 def get_resource_identity(resource):
-    return resource.get('@odata.id')
+    if resource is None:
+        return None
+    else:
+        return resource.get('@odata.id')
