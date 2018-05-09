@@ -1,0 +1,29 @@
+{
+    "@odata.context" : "/redfish/v1/$metadata#ActionInfo.ActionInfo",
+    "@odata.id" : "/redfish/v1/Nodes/2/Actions/AttachResourceActionInfo",
+    "@odata.type" : "#ActionInfo.v1_0_2.ActionInfo",
+    "Id" : "AttachResourceActionInfo",
+    "Name" : "Attach Resource ActionInfo",
+    "Description" : null,
+    "Parameters" : [
+        {
+            "Name" : "Resource",
+            "Required" : true,
+            "DataType" : "Object",
+            "ObjectDataType" : "#Resource.Resource",
+            "AllowableValues" : [
+                {
+                    "@odata.id" : "/redfish/v1/StorageServices/1-sv-1/Volumes/1-sv-1-vl-1"
+                }
+            ]
+        },
+        {
+            "Name" : "Protocol",
+            "Required" : false,
+            "DataType" : "String",
+            "ObjectDataType" : null,
+            "AllowableValues" : [ "NVMeOverFabrics" ]
+        }
+    ],
+    "Oem" : {}
+}
